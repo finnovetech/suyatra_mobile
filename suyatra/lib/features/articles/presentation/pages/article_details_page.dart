@@ -332,8 +332,8 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
   Widget _relatedArticlesList(ArticleState state) {
     List<ArticleEntity> articles = [];
     for (var i = 0; i < (widget.article.categories?.length ?? 0); i++) {
-      articles.addAll(state.allArticles!.where((element) =>
-          element.categories!.contains(widget.article.categories![i])));
+      articles.addAll(state.allArticles!.where((article) =>
+          article.categories!.contains(widget.article.categories![i]) && article.id != widget.article.id));
     }
     if(articles.isNotEmpty) {
       return CardWidget(
@@ -346,12 +346,9 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
             return GestureDetector(
               onTap: () {
                 context.read<ArticleCubit>().openArticleDetails(
-                      article,
-                      "related ${article.id}",
-                      // state.articleCategories!
-                      //     .where((element) => element.id == article.categories?.first)
-                      //     .first,
-                    );
+                  article,
+                  "related ${article.id}",
+                );
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

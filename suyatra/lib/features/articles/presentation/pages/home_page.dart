@@ -153,10 +153,10 @@ class HomePage extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 24.0),
-          state.selectedCategory == null ? _categoriesSection(articleCubit, state) : const SizedBox(),
+          _categoriesSection(articleCubit, state),
           _featuredArticlesSlider(articleCubit, state),
           const SizedBox(height: 32.0),
-          state.selectedCategory != null ? _popularArticlesList(articleCubit, state) : _popularArticlesSlider(articleCubit, state),
+          _popularArticlesSlider(articleCubit, state),
           const SizedBox(height: 24.0),
         ],
       ),
@@ -179,7 +179,14 @@ class HomePage extends StatelessWidget {
           return _categoryCard(category);
         }),
         _categoryCard(
-          const ArticleCategoryEntity(id: 0, title: "Explore", image: "", slug: "", createdAt: "", updatedAt: "")
+          const ArticleCategoryEntity(
+            id: 0, 
+            title: "Explore", 
+            image: "", 
+            slug: "", 
+            createdAt: "", 
+            updatedAt: "",
+          )
         )
       ],
     );
@@ -196,7 +203,7 @@ class HomePage extends StatelessWidget {
           elevation: 4,
           child: InkWell(
             onTap: () {
-              
+              context.read<ArticleCubit>().navigateToArticlesList(articleType: ArticleType.all, category: category.id == 0 ? null : category.id);
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -235,7 +242,7 @@ class HomePage extends StatelessWidget {
       actions: [
         InkWell(
           onTap: () {
-            articleCubit.navigateToArticlesList(ArticleType.featured);
+            articleCubit.navigateToArticlesList(articleType: ArticleType.featured);
           },
           child: const Text(
             "VIEW ALL",
@@ -338,7 +345,7 @@ class HomePage extends StatelessWidget {
       actions: [
         InkWell(
           onTap: () {
-            articleCubit.navigateToArticlesList(ArticleType.popular);
+            articleCubit.navigateToArticlesList(articleType: ArticleType.popular);
           },
           child: const Text(
             "VIEW ALL",
@@ -399,97 +406,6 @@ class HomePage extends StatelessWidget {
           enlargeCenterPage: false,
           enableInfiniteScroll: false,
         ),
-      ),
-    );
-  }
-
-  Widget _popularArticlesList(ArticleCubit articleCubit, ArticleState state) {
-    return CardWidget(
-      label: "Popular",
-      card: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          ArticleEntity popularArticle = state.popularArticles![index];
-          return GestureDetector(
-            onTap: () {
-              articleCubit.openArticleDetails(
-                popularArticle, 
-                "popular ${popularArticle.id}",
-              );
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.0),
-                border: Border.all(
-                  color: grey200,
-                )
-              ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Hero(
-                      tag: "popular ${popularArticle.id}",
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: CachedImageWidget(
-                          opacity: 0.7,
-                          imageUrl: "$websiteUrl${popularArticle.image}",
-                          fit: BoxFit.fill,
-                          height: 116,
-                          width: 104,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  SizedBox(
-                    width: 220,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          (state.articleCategories
-                            ?.where((element) =>
-                              popularArticle.categories!.contains(element.id)).map((e) => e.title).join(", ") ?? "").toUpperCase(),
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                          style: const TextStyle(
-                            fontSize: h11,
-                            fontWeight: FontWeight.w500,
-                            color: primaryDark,
-                          ),
-                        ),
-                        const SizedBox(height: 4.0),
-                        Text(
-                          popularArticle.title!,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: h9,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 4.0),
-                        Text(
-                          "${formatDateInLanguageNoYear(popularArticle.publishedDate!)} . ${popularArticle.readTime}",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: grey400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        }, 
-        separatorBuilder: (context, _) => const SizedBox(height: 12.0), 
-        itemCount: (state.popularArticles?.length ?? 0) > 3 ? 3 : state.popularArticles?.length ?? 0,
       ),
     );
   }

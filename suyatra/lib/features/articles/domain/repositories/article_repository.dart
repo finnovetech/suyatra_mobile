@@ -10,7 +10,7 @@ abstract class ArticleRepository {
 
   ResultFuture<List<ArticleEntity>> getPopularArticles({int? perPage, String? mainCategory, int? category, bool loadMore = false});
 
-  ResultFuture<List<ArticleEntity>> getAllArticles({int? perPage, String? mainCategory, int? category, int? page});
+  ResultFuture<List<ArticleEntity>> getAllArticles({int? perPage, String? mainCategory, int? category, bool loadMore = false});
 
   ResultFuture<List<CommentEntity>?> getArticleComments({required String articleId});
 

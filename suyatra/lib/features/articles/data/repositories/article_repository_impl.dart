@@ -67,14 +67,14 @@ class ArticleRepositoryImpl implements ArticleRepository {
     int? perPage,
     String? mainCategory,
     int? category,
-    int? page,
+    bool loadMore = false,
   }) async {
     try {
       final result = await _articleDataSource.getAllArticles(
         perPage: perPage,
         mainCategory: mainCategory,
         category: category,
-        page: page,
+        loadMore: loadMore,
       );
       return Right(result);
     } on APIException catch(e) {

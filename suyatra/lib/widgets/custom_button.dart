@@ -24,6 +24,7 @@ class CustomButton extends StatelessWidget {
   final double? fontSize;
   final Color? borderColor;
   final bool isLoading;
+  final double? borderRadius;
   const CustomButton({
     super.key,
     this.isExpanded = false,
@@ -44,6 +45,7 @@ class CustomButton extends StatelessWidget {
     this.fontSize,
     this.borderColor,
     this.isLoading = false,
+    this.borderRadius,
   });
 
   @override
@@ -64,7 +66,7 @@ class CustomButton extends StatelessWidget {
           backgroundColor: isDisabled ? grey400 : (buttonColor ?? blackColor),
           foregroundColor: textColor ?? whiteColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100.0),
+            borderRadius: BorderRadius.circular(borderRadius ?? 100.0),
             side: BorderSide(
               color: borderColor ?? buttonColor ?? blackColor,
             )
@@ -75,7 +77,13 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         onPressed: isDisabled || isLoading ? null : onPressed,
-        child: isLoading ? const PageLoader(height: 20, width: 20,) : Row(
+        child: isLoading ? Row(
+          mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            PageLoader(height: 20, width: 20,),
+          ],
+        ) : Row(
           mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

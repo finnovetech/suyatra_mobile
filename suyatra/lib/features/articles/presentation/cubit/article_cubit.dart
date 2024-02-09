@@ -44,8 +44,8 @@ class ArticleCubit extends Cubit<ArticleState> {
         initializeControllers();
       }
 
-  selectCategory(int? value) {
-    getCategorizedArticles(value);
+  selectCategory(int? value, {required ArticleType articleType}) {
+    getCategorizedArticles(value, articleType);
   }
 
   Future initializeControllers({bool keepText = true}) async {
@@ -75,8 +75,13 @@ class ArticleCubit extends Cubit<ArticleState> {
     String? mainCategory,
     int? category,
     bool loadMore = false,
+    bool changeTab = true,
     }) async {
-    emit(state.copyWith(articleStatus: AppStatus.loading));
+    if(loadMore) {
+      emit(state.copyWith(articleLoadingMore: AppStatus.loading));
+    } else {
+      emit(state.copyWith(articleStatus: AppStatus.loading));
+    }
     try {
       final result = await getFeaturedArticlesUseCase.call(
         GetFeaturedArticlesParams(
@@ -89,7 +94,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       result.fold(
         (error) => throw APIException(message: error.message, statusCode: -1),
         (data) {
-          emit(state.copyWith(featuredArticles: data, selectedCategory: category, clearCategory: category == null, articleStatus: AppStatus.success));
+          emit(state.copyWith(featuredArticles: data, selectedCategory: changeTab ? category : null, clearCategory: category == null, articleStatus: AppStatus.success, articleLoadingMore: AppStatus.success));
         }
       );
     } catch(e) {
@@ -97,7 +102,11 @@ class ArticleCubit extends Cubit<ArticleState> {
         print(e.toString());
       }
       toastMessage(message: e.toString());
-      emit(state.copyWith(articleStatus: AppStatus.failure));
+      if(loadMore) {
+        emit(state.copyWith(articleLoadingMore: AppStatus.failure));
+      } else {
+        emit(state.copyWith(articleStatus: AppStatus.failure));
+      }
     }
   }
 
@@ -106,9 +115,14 @@ class ArticleCubit extends Cubit<ArticleState> {
     String? mainCategory,
     int? category,
     bool loadMore = false,
+    bool changeTab = true,
     }) async {
 
-    emit(state.copyWith(articleStatus: AppStatus.loading));
+    if(loadMore) {
+      emit(state.copyWith(articleLoadingMore: AppStatus.loading));
+    } else {
+      emit(state.copyWith(articleStatus: AppStatus.loading));
+    }
     try {
       final result = await getPopularArticlesUseCase.call(
         GetPopularArticlesParams(
@@ -121,7 +135,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       result.fold(
         (error) => throw APIException(message: error.message, statusCode: -1), 
         (data) {
-          emit(state.copyWith(popularArticles: data, selectedCategory: category, clearCategory: category == null, articleStatus: AppStatus.success));
+          emit(state.copyWith(popularArticles: data, selectedCategory: changeTab ? category : null, clearCategory: category == null, articleStatus: AppStatus.success, articleLoadingMore: AppStatus.success));
         }
       );
     } catch(e) {
@@ -129,7 +143,52 @@ class ArticleCubit extends Cubit<ArticleState> {
         print(e.toString());
       }
       toastMessage(message: e.toString());
-      emit(state.copyWith(articleStatus: AppStatus.failure));
+      if(loadMore) {
+        emit(state.copyWith(articleLoadingMore: AppStatus.failure));
+      } else {
+        emit(state.copyWith(articleStatus: AppStatus.failure));
+      }
+    }
+  }
+
+  getAllArticles({
+    int? perPage,
+    String? mainCategory,
+    int? category,
+    bool loadMore = false,
+    bool changeTab = true,
+    }) async {
+    if(loadMore) {
+      emit(state.copyWith(articleLoadingMore: AppStatus.loading));
+    } else {
+      emit(state.copyWith(articleStatus: AppStatus.loading));
+    }
+    try {
+      final result = await getAllArticlesUseCase.call(
+        GetAllArticlesParams(
+          perPage: perPage,
+          mainCategory: mainCategory,
+          category: category,
+          loadMore: loadMore,
+        )
+      );
+
+      result.fold(
+        (error) => throw APIException(message: error.message, statusCode: -1),
+        (data) {
+          emit(state.copyWith(allArticles: data, selectedCategory: changeTab ? category : null, clearCategory: category == null, articleStatus: AppStatus.success, articleLoadingMore: AppStatus.success));
+        }
+      );
+    } catch(e) {
+      if(kDebugMode) {
+        print(e.toString());
+      }
+      toastMessage(message: e.toString());
+      if(loadMore) {
+        emit(state.copyWith(articleLoadingMore: AppStatus.failure));
+      } else {
+        emit(state.copyWith(articleStatus: AppStatus.failure));
+      }
     }
   }
 
@@ -138,12 +197,11 @@ class ArticleCubit extends Cubit<ArticleState> {
     String? mainCategory,
     int? category,
     int? page,
-    ArticleType articleType = ArticleType.all,
     }) async {
     if(state.articleStatus != AppStatus.loading) {
-      switch (articleType) {
+      switch (state.articleType) {
         case ArticleType.all:
-          await getPopularArticles(
+          await getAllArticles(
             perPage: perPage,
             mainCategory: mainCategory,
             category: category,
@@ -172,38 +230,9 @@ class ArticleCubit extends Cubit<ArticleState> {
     
   }
 
-  navigateToArticlesList(ArticleType articleType) {
-    locator<NavigationService>().navigateToAndBack(articlesListRoute, arguments: articleType);
-  }
-
-  getAllArticles({
-    int? perPage,
-    String? mainCategory,
-    int? category,
-    int? page,
-    }) async {
-    emit(state.copyWith(articleStatus: AppStatus.loading));
-    try {
-      final result = await getAllArticlesUseCase.call(
-        GetAllArticlesParams(
-          perPage: perPage,
-          mainCategory: mainCategory,
-          category: category,
-          page: page,
-        )
-      );
-
-      result.fold(
-        (error) => throw APIException(message: error.message, statusCode: -1),
-        (data) => emit(state.copyWith(allArticles: data, articleStatus: AppStatus.success))
-      );
-    } catch(e) {
-      if(kDebugMode) {
-        print(e.toString());
-      }
-      toastMessage(message: e.toString());
-      emit(state.copyWith(articleStatus: AppStatus.failure));
-    }
+  navigateToArticlesList({required ArticleType articleType, int? category}) {
+    selectCategory(category, articleType: articleType);
+    locator<NavigationService>().navigateToAndBack(articlesListRoute);
   }
 
   openArticleDetails(ArticleEntity article, String heroTag) {
@@ -216,13 +245,27 @@ class ArticleCubit extends Cubit<ArticleState> {
     );
   }
 
-  getCategorizedArticles(int? categoryId) {
-    getFeaturedArticles(
-      category: categoryId,
-    );
-    getPopularArticles(
-      category: categoryId,
-    );
+  getCategorizedArticles(int? categoryId, ArticleType articleType) async {
+    emit(state.copyWith(articleType: articleType));
+    switch (articleType) {
+      case ArticleType.all:
+        await getAllArticles(
+          category: categoryId,
+        );
+        break;
+      case ArticleType.featured:
+        await getFeaturedArticles(
+          category: categoryId,
+        );
+        break;
+      case ArticleType.popular:
+        await getPopularArticles(
+          category: categoryId,
+        );
+        break;
+      default:
+    }
+    
   }
 
   Future getArticleComments({required String articleId}) async {

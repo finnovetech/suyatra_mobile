@@ -19,7 +19,8 @@ abstract class ArticleDataSource {
   Future<List<ArticleModel>> getMoreFeaturedArticles({required List<ArticleModel> featuredArticles, String? mainCategory, int? category,});
   Future<List<ArticleModel>> getPopularArticles({int? perPage, String? mainCategory, int? category, bool loadMore});
   Future<List<ArticleModel>> getMorePopularArticles({required List<ArticleModel> popularArticles, String? mainCategory, int? category,});
-  Future<List<ArticleModel>> getAllArticles({int? perPage, String? mainCategory, int? category, int? page});
+  Future<List<ArticleModel>> getAllArticles({int? perPage, String? mainCategory, int? category, bool loadMore});
+  Future<List<ArticleModel>> getMoreAllArticles({required List<ArticleModel> allArticles, String? mainCategory, int? category,});
   Future<List<CommentModel>> getArticleComments({required String articleId});
   Future<void> addArticleComment({required String articleId, required Map<String, dynamic> comment});
 }
@@ -57,9 +58,16 @@ class ArticleDataSourceImpl implements ArticleDataSource {
     bool loadMore = false,
     }) async {
     try {
-      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/featured_stories?per_page=${perPage ?? 10}&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=$_currentFeaturedPage");
-      _currentFeaturedPage++;
+      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/featured_stories?per_page=${perPage ?? 10}&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=${loadMore ? _currentFeaturedPage : 0}");
       if(response.statusCode == 200) {
+        //clear current loaded articles and reset current page
+        if(!loadMore) {
+          featuredArticles.clear();
+          _currentFeaturedPage = 1;
+        } else {
+          _currentFeaturedPage++;
+        }
+
         if((featuredArticles.length >= int.parse(jsonDecode(response.body)["total"].toString()))) {
           return featuredArticles;
         }
@@ -115,8 +123,14 @@ class ArticleDataSourceImpl implements ArticleDataSource {
     bool loadMore = false,
     }) async {
     try {
-      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/popular_stories?per_page=${perPage ?? 10}&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=$_currentPopularPage");
-      _currentPopularPage++;
+      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/popular_stories?per_page=${perPage ?? 10}&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=${loadMore ? _currentPopularPage : 0}");
+      //clear current loaded articles and reset current page
+      if(!loadMore) {
+        popularArticles.clear();
+        _currentPopularPage = 1;
+      } else {
+        _currentPopularPage++;
+      }
       if(response.statusCode == 200) {
         if((popularArticles.length >= int.parse(jsonDecode(response.body)["total"].toString()))) {
           return popularArticles;
@@ -163,21 +177,64 @@ class ArticleDataSourceImpl implements ArticleDataSource {
     }
   }
 
+  int _currentArticlePage = 0;
+  List<ArticleModel> allArticles = [];
   @override
   Future<List<ArticleModel>> getAllArticles({
     int? perPage = 10,
     String? mainCategory = "",
     int? category,
     int? page = 0,
+    bool loadMore = false,
     }) async {
     try {
-      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/stories?per_page=${perPage ?? 10}&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=${page ?? 0}");
+      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/stories?per_page=${perPage ?? 10}&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=${loadMore ? _currentArticlePage : 0}");
       if(response.statusCode == 200) {
-        List<ArticleModel> articles = List.from(jsonDecode(response.body)["result"]).map((e) => ArticleModel.fromMap(e)).toList();
-        return articles;
+        //clear current loaded articles and reset current page
+        if(!loadMore) {
+          allArticles.clear();
+          _currentArticlePage = 1;
+        } else {
+          _currentArticlePage++;
+        }
+        if((allArticles.length >= int.parse(jsonDecode(response.body)["total"].toString()))) {
+          return allArticles;
+        }
+        else {
+          allArticles.addAll(List.from(jsonDecode(response.body)["result"]).map((e) => ArticleModel.fromMap(e)).toList());
+          if(loadMore && (allArticles.length <= int.parse(jsonDecode(response.body)["total"].toString()))) {
+            allArticles = await getMoreAllArticles(
+              allArticles: allArticles,
+              mainCategory: mainCategory,
+              category: category,
+            );
+          }
+          return allArticles;
+        }
       } else {
         throw APIException(message: response.body, statusCode: response.statusCode);
       }
+    } on APIException {
+      rethrow;
+    } catch(e) {
+      throw APIException(message: e.toString(), statusCode: -1);
+    }
+  }
+
+  @override
+  Future<List<ArticleModel>> getMoreAllArticles({
+    required List<ArticleModel> allArticles, 
+    String? mainCategory,
+    int? category,
+    }) async {
+    try {
+      final moreResponse = await _apiBaseHelper.getWithoutToken("$baseUrl/stories?per_page=10&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=$_currentArticlePage");
+      if(moreResponse.statusCode == 200) {
+        allArticles.addAll(List.from(jsonDecode(moreResponse.body)["result"]).map((e) => ArticleModel.fromMap(e)).toList());
+      } else {
+        throw APIException(message: moreResponse.body, statusCode: moreResponse.statusCode);
+      }
+      return allArticles;
     } on APIException {
       rethrow;
     } catch(e) {

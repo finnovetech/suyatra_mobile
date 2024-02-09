@@ -13,7 +13,7 @@ class GetAllArticlesUseCase implements UseCaseWithParams<List<ArticleEntity>, Ge
       perPage: params.perPage,
       mainCategory: params.mainCategory,
       category: params.category,
-      page: params.page,
+      loadMore: params.loadMore,
     );
   }
 }
@@ -22,7 +22,7 @@ class GetAllArticlesParams {
   final int? perPage;
   final String? mainCategory;
   final int? category;
-  final int? page;
+  final bool loadMore;
 
-  GetAllArticlesParams({this.perPage, this.mainCategory, this.category, this.page});
+  GetAllArticlesParams({this.perPage, this.mainCategory, this.category, this.loadMore = false});
 }

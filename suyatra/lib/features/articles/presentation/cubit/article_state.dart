@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:suyatra/constants/enums.dart';
 import 'package:suyatra/core/app_status.dart';
 import 'package:suyatra/features/articles/domain/entities/article_category_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_comment_entity.dart';
@@ -15,6 +16,9 @@ class ArticleState extends Equatable {
   final AppStatus articleStatus;
   final TextEditingController? commentContoller;
   final GlobalKey? commentWidgetKey;
+  final AppStatus articleLoadingMore;
+  final ArticleType articleType;
+
 
   const ArticleState({
     this.articleCategories,
@@ -26,6 +30,8 @@ class ArticleState extends Equatable {
     this.articleStatus = AppStatus.initial,
     this.commentContoller,
     this.commentWidgetKey,
+    this.articleLoadingMore = AppStatus.initial,
+    this.articleType = ArticleType.all,
   });
 
   ArticleState copyWith({
@@ -39,6 +45,8 @@ class ArticleState extends Equatable {
     AppStatus? articleStatus,
     TextEditingController? commentContoller,
     GlobalKey? commentWidgetKey,
+    AppStatus? articleLoadingMore,
+    ArticleType? articleType,
   }) {
     return ArticleState(
       articleCategories: articleCategories ?? this.articleCategories,
@@ -52,6 +60,8 @@ class ArticleState extends Equatable {
       articleStatus: articleStatus ?? this.articleStatus,
       commentContoller: commentContoller ?? this.commentContoller,
       commentWidgetKey: commentWidgetKey ?? this.commentWidgetKey,
+      articleLoadingMore: articleLoadingMore ?? this.articleLoadingMore,
+      articleType: articleType ?? this.articleType,
     );
   }
 
@@ -66,5 +76,7 @@ class ArticleState extends Equatable {
     articleStatus,
     commentContoller,
     commentWidgetKey,
+    articleLoadingMore,
+    articleType,
   ];
 }

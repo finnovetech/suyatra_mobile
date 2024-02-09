@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:suyatra/constants/enums.dart';
 import 'package:suyatra/features/articles/presentation/pages/articles_list_page.dart';
 import 'package:suyatra/features/articles/presentation/widgets/web_view_external_links.dart';
 import 'package:suyatra/features/authentication/presentation/pages/login_page.dart';
@@ -62,8 +61,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeSettings: settings,
       );
     case articlesListRoute:
-      ArticleType type = (settings.arguments as ArticleType?) ?? ArticleType.all;
-      return customPageRoute(child: ArticlesListPage(articleType: type), routeSettings: settings);
+      return customPageRoute(child: const ArticlesListPage(), routeSettings: settings);
     case webViewRoute:
       String url = settings.arguments as String;
       return customPageRoute(child: WebViewExternalUrls(url: url,), routeSettings: settings);
