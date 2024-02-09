@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "563657825817",
+    "project_id": "suyatra-8ab36",
+    "storage_bucket": "suyatra-8ab36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563657825817:android:c2a97cac7a3db9f5de1488",
+        "android_client_info": {
+          "package_name": "com.finnove.suyatra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0GXBX_g55htAW7b7_79uaqLPiXl9uwJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

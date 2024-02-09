@@ -1,0 +1,11 @@
+const double h1 = 32;
+const double h2 = 30;
+const double h3 = 28;
+const double h4 = 26;
+const double h5 = 24;
+const double h6 = 22;
+const double h7 = 20;
+const double h8 = 18;
+const double h9 = 16;
+const double h10 = 14;
+const double h11 = 12;
