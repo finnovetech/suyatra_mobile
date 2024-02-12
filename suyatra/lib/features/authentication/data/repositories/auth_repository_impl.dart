@@ -52,4 +52,14 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ApiFailure.fromException(e));
     }
   }
+
+  @override
+  ResultFuture<UserEntity> signInWithGoogle() async {
+    try {
+      final result = await _authDataSource.signInWithGoogle();
+      return Right(result!);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
 }

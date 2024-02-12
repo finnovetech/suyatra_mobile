@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +13,7 @@ import 'package:suyatra/features/articles/domain/usecases/get_article_comments_u
 import 'package:suyatra/features/articles/domain/usecases/get_featured_articles_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_popular_articles_use_case.dart';
 import 'package:suyatra/features/articles/presentation/cubit/article_state.dart';
+import 'package:suyatra/services/firebase_service.dart';
 import 'package:suyatra/services/navigation_service.dart';
 import 'package:suyatra/utils/toast_message.dart';
 
@@ -296,7 +296,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       return;
     }
     //navigate to sign up screen if user not logged in
-    if(FirebaseAuth.instance.currentUser == null) {
+    if(locator<FirebaseService>().firebaseAuth.currentUser == null) {
       locator<NavigationService>().navigateTo(signUpRoute, arguments: {"route": articleDetailsRoute, "article": article}, );
       return;
     }

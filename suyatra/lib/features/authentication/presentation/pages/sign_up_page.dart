@@ -207,6 +207,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 24.0),
                 CustomButton(
+                  onPressed: () {
+                    context.read<AuthCubit>().signInWithGoogle();
+                  },
                   label: "Continue with google",
                   buttonColor: Colors.transparent,
                   borderColor: blackColor,

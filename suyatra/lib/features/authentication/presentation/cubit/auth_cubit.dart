@@ -9,14 +9,17 @@ import 'package:suyatra/services/app_routes.dart';
 import 'package:suyatra/services/navigation_service.dart';
 
 import '../../../../utils/toast_message.dart';
+import '../../domain/usecases/sign_in_with_google_use_case.dart';
 import '../../domain/usecases/sign_up_user_use_case.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final SignUpUserUseCase signUpUserUseCase;
   final SignInUserUseCase signInUserUseCase;
   final SignOutUserUseCase signOutUserUseCase;
+  final SignInWithGoogleUseCase signInWithGoogleUseCase;
 
-  AuthCubit({required this.signUpUserUseCase, required this.signInUserUseCase, required this.signOutUserUseCase}) 
+
+  AuthCubit({required this.signUpUserUseCase, required this.signInUserUseCase, required this.signOutUserUseCase, required this.signInWithGoogleUseCase}) 
     : super(const AuthState());
 
   signUpUser({
@@ -84,6 +87,27 @@ class AuthCubit extends Cubit<AuthState> {
       if(kDebugMode) {
         print(e.toString());
       }
+      emit(state.copyWith(authStatus: AppStatus.failure));
+    }
+  }
+
+  signInWithGoogle() async {
+    emit(state.copyWith(authStatus: AppStatus.loading));
+    try {
+      final result = await signInWithGoogleUseCase.call();
+
+      result.fold(
+        (error) {
+          emit(state.copyWith(authStatus: AppStatus.failure));
+          toastMessage(message: error.message);
+        }, 
+        (data) => emit(state.copyWith(user: data, authStatus: AppStatus.success))
+      );
+    } catch(e) {
+      if(kDebugMode) {
+        print(e.toString());
+      }
+      toastMessage(message: e);
       emit(state.copyWith(authStatus: AppStatus.failure));
     }
   }

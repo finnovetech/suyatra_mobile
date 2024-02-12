@@ -76,7 +76,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
         onPressed: () {
           locator<NavigationService>().navigateTo(homeRoute);
         }, 
-        icon: const Icon(Icons.arrow_back)
+        icon: Icon(Icons.adaptive.arrow_back),
       ),
       actions: [
         IconButton(

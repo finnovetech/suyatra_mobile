@@ -12,7 +12,36 @@
           "package_name": "com.finnove.suyatra"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "563657825817-692sbvdbk7ruoa7o1to40qdd0b0bdq8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.finnove.suyatra",
+            "certificate_hash": "882cc5bbdf45b1fafd21470947578b8395f229de"
+          }
+        },
+        {
+          "client_id": "563657825817-gfgaq7uce2ja186u31skqrn7a3d196e2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.finnove.suyatra",
+            "certificate_hash": "9c4c138826e94121bd12d50da4d40c61df7ae4ad"
+          }
+        },
+        {
+          "client_id": "563657825817-lhc0b6dn609ld0b2gj7to7i57voo9u81.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.finnove.suyatra",
+            "certificate_hash": "2a1572d043426cd6a4a1bee884ac45b87050f00d"
+          }
+        },
+        {
+          "client_id": "563657825817-gvkuteh59aag2nqnsa5c2koomjrn4ro2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC0GXBX_g55htAW7b7_79uaqLPiXl9uwJs"
@@ -20,7 +49,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563657825817-gvkuteh59aag2nqnsa5c2koomjrn4ro2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "563657825817-dchvbivrk98gk081nc6pi9spugglk2vk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.finnove.suyatra.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

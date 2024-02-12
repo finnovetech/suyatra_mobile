@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
             signUpUserUseCase: locator(),
             signInUserUseCase: locator(),
             signOutUserUseCase: locator(),
+            signInWithGoogleUseCase: locator(),
           )
         )
       ],
