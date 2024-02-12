@@ -71,6 +71,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<void> signOutUser() async {
     final User? firebaseUser = locator<FirebaseService>().firebaseAuth.currentUser;
     if (firebaseUser != null) {
+      await GoogleSignIn().signOut();
       await locator<FirebaseService>().firebaseAuth.signOut();
     }
   }
