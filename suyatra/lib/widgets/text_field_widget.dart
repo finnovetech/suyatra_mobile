@@ -11,6 +11,9 @@ class TextFieldWidget extends StatefulWidget {
   final bool isPasswordField;
   final List<String>? autoFillHints;
   final Widget? suffixIcon;
+  final String? textValue;
+  final bool readOnly;
+  final void Function(String?)? onChanged;
   const TextFieldWidget({
     Key? key, 
     this.labelText, 
@@ -20,6 +23,9 @@ class TextFieldWidget extends StatefulWidget {
     this.isPasswordField = false, 
     this.autoFillHints, 
     this.suffixIcon,
+    this.textValue,
+    this.readOnly = false,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -68,11 +74,13 @@ class TextFieldDesignPageState extends State<TextFieldWidget> {
       ),
       padding: const EdgeInsets.all(16.0),
       child: TextFormField(
+        onChanged: widget.onChanged,
+        readOnly: widget.readOnly,
         autofillHints: widget.isPasswordField ? [
           AutofillHints.password,
         ] : widget.autoFillHints,
         focusNode: _focusNode,
-        controller: widget.controller,
+        controller: widget.controller ?? TextEditingController(text: widget.textValue ?? ""),
         obscureText: widget.isPasswordField ? _obscurePassword : false,
         decoration: InputDecoration(
           isDense: true,
