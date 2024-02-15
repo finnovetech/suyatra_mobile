@@ -7,6 +7,8 @@ import 'package:suyatra/features/authentication/presentation/pages/sign_up_page.
 import 'package:suyatra/features/articles/domain/entities/article_category_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_entity.dart';
 import 'package:suyatra/features/articles/presentation/pages/home_page.dart';
+import 'package:suyatra/features/settings/presentation/pages/edit_user_profile_page.dart';
+import 'package:suyatra/features/settings/presentation/pages/settings_page.dart';
 
 import '../features/articles/presentation/pages/article_details_page.dart';
 import '../features/splash/presentation/pages/splash_page.dart';
@@ -25,6 +27,11 @@ const String homeRoute = "homeRoute";
 const String articleDetailsRoute = "articleDetailsRoute";
 const String articlesListRoute = "articlesListRoute";
 const String webViewRoute = "webViewRoute";
+
+//settings route names
+const String settingsRoute = "settingsRoute";
+const String editUserProfileRoute = "editUserProfileRoute";
+
 
 
 
@@ -48,6 +55,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //home routes
     case homeRoute:
       return customPageRoute(child: const HomePage(), routeSettings: settings);
+
+    //article routes
     case articleDetailsRoute:
       ArticleEntity article = (settings.arguments as Map)["article"];
       String heroTag = (settings.arguments as Map)["tag"];
@@ -65,6 +74,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case webViewRoute:
       String url = settings.arguments as String;
       return customPageRoute(child: WebViewExternalUrls(url: url,), routeSettings: settings);
+      
+    //settings routes
+    case settingsRoute:
+      return customPageRoute(child: const SettingsPage(), routeSettings: settings);
+    case editUserProfileRoute:
+      return customPageRoute(child: const EditUserProfilePage(), routeSettings: settings);
     default:
       return MaterialPageRoute(builder: (context) => Material(child: Center(child: Text("No such route ${settings.name}"),)));
   }
