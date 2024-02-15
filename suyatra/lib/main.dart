@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ArticleCubit>(
           create: (context) => ArticleCubit(
+            getMainCategoriesUseCase: locator(),
             getArticleCategoriesUseCase: locator(), 
             getFeaturedArticlesUseCase: locator(), 
             getPopularArticlesUseCase: locator(), 
@@ -42,6 +43,8 @@ class MyApp extends StatelessWidget {
             signInUserUseCase: locator(),
             signOutUserUseCase: locator(),
             signInWithGoogleUseCase: locator(),
+            updateUserProfileUseCase: locator(),
+            verifyUserEmailUseCase: locator(),
           )
         )
       ],
