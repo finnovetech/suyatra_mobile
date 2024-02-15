@@ -5,7 +5,6 @@ import '../../domain/entities/user_entity.dart';
 
 class AuthState extends Equatable {
   final UserEntity? user;
-
   final AppStatus authStatus;
   const AuthState({this.user, this.authStatus = AppStatus.initial});
 

@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:suyatra/core/service_locator.dart';
 import 'package:suyatra/features/authentication/data/models/user_model.dart';
 import 'package:suyatra/services/firebase_service.dart';
+import 'package:suyatra/utils/toast_message.dart';
 
 import '../../../../core/exceptions.dart';
 import '../../../../core/firebase_error_messages.dart';
@@ -12,7 +13,8 @@ abstract class AuthDataSource {
   Future<UserModel?> signInUser({required String email, required String password});
   Future<void> signOutUser();
   Future<UserModel?> signInWithGoogle();
-
+  Future<UserModel?> updateUserProfile({String? displayName, required String? photoUrl, required PhoneAuthCredential? phoneNumber, required String? email});
+  Future<void> verifyUserEmail();
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
@@ -52,8 +54,13 @@ class AuthDataSourceImpl implements AuthDataSource {
         email: email.trim(),
         password: password.trim()
       );
+      
       final User? firebaseUser = userCredential.user;
       if(firebaseUser != null) {
+
+        if (!firebaseUser.emailVerified) {
+          await firebaseUser.sendEmailVerification();
+        }
         return UserModel(
           id: firebaseUser.uid, 
           email: firebaseUser.email ?? "", 
@@ -108,5 +115,48 @@ class AuthDataSourceImpl implements AuthDataSource {
       throw APIException(message: Errors.show(e.code), statusCode: -1);
     }
     return null;
+  }
+
+  @override
+  Future<UserModel?> updateUserProfile({
+    String? displayName,
+    String? photoUrl,
+    PhoneAuthCredential? phoneNumber,
+    String? email,
+    }) async {
+    try {
+      User? user = locator<FirebaseService>().firebaseAuth.currentUser;
+      if(displayName != null) {
+        await user?.updateDisplayName(displayName);
+      }
+      if(photoUrl != null) {
+        await user?.updatePhotoURL(photoUrl);
+      }
+      if(phoneNumber != null) {
+        await user?.updatePhoneNumber(phoneNumber);
+      }
+
+      if(email != null) {
+        await user?.verifyBeforeUpdateEmail(email);
+        toastMessage(message: "The email will be updated after it has been verified!");
+      }
+      
+      return UserModel(
+        id: user?.uid, 
+        email: user?.email ?? "", 
+        firstName: user?.displayName ?? "", 
+        lastName: user?.displayName ?? "",
+      );
+    } on FirebaseAuthException catch (e) {
+      throw APIException(message: Errors.show(e.code), statusCode: -1);
+    }
+  }
+
+  @override
+  Future<void> verifyUserEmail() async {
+    final User? firebaseUser = locator<FirebaseService>().firebaseAuth.currentUser;
+    if (firebaseUser != null) {
+      await firebaseUser.sendEmailVerification();
+    }
   }
 }

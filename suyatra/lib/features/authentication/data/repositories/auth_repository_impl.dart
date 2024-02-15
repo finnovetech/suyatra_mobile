@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:suyatra/core/exceptions.dart';
 import 'package:suyatra/core/failure.dart';
 import 'package:suyatra/core/typedef.dart';
@@ -62,4 +63,30 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ApiFailure.fromException(e));
     }
   }
+
+  @override
+  ResultFuture<UserEntity> updateUserProfile({String? displayName, String? photoUrl, PhoneAuthCredential? phoneNumber, String? email}) async {
+    try {
+      final result = await _authDataSource.updateUserProfile(
+        displayName: displayName,
+        photoUrl: photoUrl,
+        phoneNumber: phoneNumber,
+        email: email,
+      );
+      return Right(result!);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> verifyUserEmail() async {
+    try {
+      final result = await _authDataSource.verifyUserEmail();
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
 }
