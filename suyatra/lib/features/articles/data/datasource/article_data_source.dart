@@ -6,6 +6,7 @@ import 'package:suyatra/core/exceptions.dart';
 import 'package:suyatra/features/articles/data/models/article_category_model.dart';
 import 'package:suyatra/features/articles/data/models/article_model.dart';
 import 'package:suyatra/features/articles/data/models/comment_model.dart';
+import 'package:suyatra/features/articles/data/models/main_category_model.dart';
 import 'package:suyatra/services/api_service/api_base_helper.dart';
 
 import '../../../../core/firebase_error_messages.dart';
@@ -14,6 +15,7 @@ import '../../../../services/firebase_service.dart';
 import '../../../../utils/date_formats.dart';
 
 abstract class ArticleDataSource {
+  Future<List<MainCategoryModel>> getMainCategories();
   Future<List<ArticleCategoryModel>> getArticleCategories();
   Future<List<ArticleModel>> getFeaturedArticles({int? perPage, String? mainCategory, int? category, bool loadMore});
   Future<List<ArticleModel>> getMoreFeaturedArticles({required List<ArticleModel> featuredArticles, String? mainCategory, int? category,});
@@ -29,6 +31,42 @@ class ArticleDataSourceImpl implements ArticleDataSource {
   final ApiBaseHelper _apiBaseHelper;
   // final FirebaseFirestore _firebaseFirestore;
   ArticleDataSourceImpl(this._apiBaseHelper);
+
+  @override
+  Future<List<MainCategoryModel>> getMainCategories() async {
+    try {
+      List<MainCategoryModel> mainCategories = [];
+      await Future.delayed(const Duration(milliseconds: 2000), () {
+        mainCategories = [
+          const MainCategoryModel(
+            id: 001, 
+            title: "News briefs",
+            value: "news_briefs",
+          ),
+          const MainCategoryModel(
+            id: 002, 
+            title: "Guides",
+            value: "guides",
+          ),
+          const MainCategoryModel(
+            id: 003, 
+            title: "Newsletter",
+            value: "newsletter"
+          ),
+          const MainCategoryModel(
+            id: 004, 
+            title: "Longreads",
+            value: "longreads"
+          ),
+        ];
+      });
+      return mainCategories;
+    } on APIException {
+      rethrow;
+    } catch(e) {
+      throw APIException(message: e.toString(), statusCode: -1);
+    }
+  }
 
   @override
   Future<List<ArticleCategoryModel>> getArticleCategories() async {

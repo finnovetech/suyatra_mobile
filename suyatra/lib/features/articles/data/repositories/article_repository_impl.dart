@@ -6,11 +6,22 @@ import 'package:suyatra/features/articles/data/datasource/article_data_source.da
 import 'package:suyatra/features/articles/domain/entities/article_category_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_comment_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_entity.dart';
+import 'package:suyatra/features/articles/domain/entities/main_category_entity.dart';
 import 'package:suyatra/features/articles/domain/repositories/article_repository.dart';
 
 class ArticleRepositoryImpl implements ArticleRepository {
   final ArticleDataSource _articleDataSource;
   ArticleRepositoryImpl(this._articleDataSource);
+
+  @override
+  ResultFuture<List<MainCategoryEntity>> getMainCategories() async {
+    try {
+      final result = await _articleDataSource.getMainCategories();
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
 
   @override
   ResultFuture<List<ArticleCategoryEntity>> getArticleCategories() async {

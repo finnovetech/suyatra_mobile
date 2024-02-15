@@ -11,6 +11,7 @@ import 'package:suyatra/features/articles/domain/usecases/get_all_articles_use_c
 import 'package:suyatra/features/articles/domain/usecases/get_article_categories_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_article_comments_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_featured_articles_use_case.dart';
+import 'package:suyatra/features/articles/domain/usecases/get_main_categories_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_popular_articles_use_case.dart';
 import 'package:suyatra/features/articles/presentation/cubit/article_state.dart';
 import 'package:suyatra/services/firebase_service.dart';
@@ -20,6 +21,7 @@ import 'package:suyatra/utils/toast_message.dart';
 import '../../../../services/app_routes.dart';
 
 class ArticleCubit extends Cubit<ArticleState> {
+  final GetMainCategoriesUseCase getMainCategoriesUseCase;
   final GetArticleCategoriesUseCase getArticleCategoriesUseCase;
   final GetFeaturedArticlesUseCase getFeaturedArticlesUseCase;
   final GetPopularArticlesUseCase getPopularArticlesUseCase;
@@ -27,8 +29,8 @@ class ArticleCubit extends Cubit<ArticleState> {
   final GetArticleCommentsUseCase getArticleCommentsUseCase;
   final AddArticleCommentUseCase addArticleCommentUseCase;
 
-
   ArticleCubit({
+    required this.getMainCategoriesUseCase,
     required this.getArticleCategoriesUseCase, 
     required this.getFeaturedArticlesUseCase, 
     required this.getPopularArticlesUseCase, 
@@ -37,6 +39,7 @@ class ArticleCubit extends Cubit<ArticleState> {
     required this.addArticleCommentUseCase,
   }) 
     : super(const ArticleState()) {
+        getMainCategories();
         getArticleCategories();
         getFeaturedArticles();
         getPopularArticles();
@@ -44,12 +47,35 @@ class ArticleCubit extends Cubit<ArticleState> {
         initializeControllers();
       }
 
-  selectCategory(int? value, {required ArticleType articleType}) {
-    getCategorizedArticles(value, articleType);
+  selectMainCategory(String? value) {
+    emit(state.copyWith(selectedMainCategory: value, clearMainCategory: value == null ? true : false,));
+  }
+
+  selectCategory(int? value, {required ArticleType articleType, String? mainCategory}) {
+    selectMainCategory(mainCategory);
+    getCategorizedArticles(value, articleType, mainCategory: mainCategory);
   }
 
   Future initializeControllers({bool keepText = true}) async {
     emit(state.copyWith(commentWidgetKey: GlobalKey(), commentContoller: TextEditingController(text: keepText ? state.commentContoller?.text : null)));
+  }
+
+  getMainCategories() async {
+    emit(state.copyWith(articleStatus: AppStatus.loading));
+    try {
+      final result = await getMainCategoriesUseCase.call();
+
+      result.fold(
+        (error) => throw APIException(message: error.message, statusCode: -1), 
+        (data) => emit(state.copyWith(mainCategories: data, articleStatus: AppStatus.success))
+      );
+    } catch(e) {
+      if(kDebugMode) {
+        print(e.toString());
+      }
+      toastMessage(message: e.toString());
+      emit(state.copyWith(articleStatus: AppStatus.failure));
+    }
   }
   
   getArticleCategories() async {
@@ -230,8 +256,8 @@ class ArticleCubit extends Cubit<ArticleState> {
     
   }
 
-  navigateToArticlesList({required ArticleType articleType, int? category}) {
-    selectCategory(category, articleType: articleType);
+  navigateToArticlesList({required ArticleType articleType, int? category, String? mainCategory}) {
+    selectCategory(category, articleType: articleType, mainCategory: mainCategory);
     locator<NavigationService>().navigateToAndBack(articlesListRoute);
   }
 
@@ -245,22 +271,25 @@ class ArticleCubit extends Cubit<ArticleState> {
     );
   }
 
-  getCategorizedArticles(int? categoryId, ArticleType articleType) async {
+  getCategorizedArticles(int? categoryId, ArticleType articleType, {String? mainCategory}) async {
     emit(state.copyWith(articleType: articleType));
     switch (articleType) {
       case ArticleType.all:
         await getAllArticles(
           category: categoryId,
+          mainCategory: mainCategory,
         );
         break;
       case ArticleType.featured:
         await getFeaturedArticles(
           category: categoryId,
+          mainCategory: mainCategory,
         );
         break;
       case ArticleType.popular:
         await getPopularArticles(
           category: categoryId,
+          mainCategory: mainCategory,
         );
         break;
       default:
@@ -365,4 +394,5 @@ class ArticleCubit extends Cubit<ArticleState> {
         return "assets/icons/categories/explore.svg";
     }
   }
+
 }

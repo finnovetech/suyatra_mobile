@@ -5,8 +5,11 @@ import 'package:suyatra/core/app_status.dart';
 import 'package:suyatra/features/articles/domain/entities/article_category_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_comment_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_entity.dart';
+import 'package:suyatra/features/articles/domain/entities/main_category_entity.dart';
 
 class ArticleState extends Equatable {
+  final List<MainCategoryEntity>? mainCategories;
+  final String? selectedMainCategory;
   final List<ArticleCategoryEntity>? articleCategories;
   final List<ArticleEntity>? featuredArticles;
   final List<ArticleEntity>? popularArticles;
@@ -21,6 +24,8 @@ class ArticleState extends Equatable {
 
 
   const ArticleState({
+    this.mainCategories,
+    this.selectedMainCategory,
     this.articleCategories,
     this.featuredArticles,
     this.popularArticles,
@@ -35,6 +40,9 @@ class ArticleState extends Equatable {
   });
 
   ArticleState copyWith({
+    List<MainCategoryEntity>? mainCategories,
+    String? selectedMainCategory,
+    bool clearMainCategory = false,
     List<ArticleCategoryEntity>? articleCategories,
     List<ArticleEntity>? featuredArticles,
     List<ArticleEntity>? popularArticles,
@@ -49,6 +57,10 @@ class ArticleState extends Equatable {
     ArticleType? articleType,
   }) {
     return ArticleState(
+      mainCategories: mainCategories ?? this.mainCategories,
+      selectedMainCategory: clearMainCategory == true
+          ? null
+          : (selectedMainCategory ?? this.selectedMainCategory),
       articleCategories: articleCategories ?? this.articleCategories,
       featuredArticles: featuredArticles ?? this.featuredArticles,
       popularArticles: popularArticles ?? this.popularArticles,
@@ -67,6 +79,8 @@ class ArticleState extends Equatable {
 
   @override
   List<Object?> get props => [
+    mainCategories,
+    selectedMainCategory,
     articleCategories,
     featuredArticles,
     popularArticles,

@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,6 +13,7 @@ import 'package:suyatra/features/articles/domain/entities/article_category_entit
 import 'package:suyatra/features/articles/domain/entities/article_entity.dart';
 import 'package:suyatra/features/articles/presentation/cubit/article_cubit.dart';
 import 'package:suyatra/services/app_routes.dart';
+import 'package:suyatra/services/firebase_service.dart';
 import 'package:suyatra/services/navigation_service.dart';
 // import 'package:suyatra/utils/string_extensions.dart';
 import 'package:suyatra/widgets/card_widget.dart';
@@ -49,11 +50,13 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             );
-          default:
+          case AppStatus.success:
             return Scaffold(
               appBar: _appBar(context, context.read<ArticleCubit>(), state),
               body: _body(context.read<ArticleCubit>(), state),
             );
+          default:
+            return const CircularProgressIndicator();
         }
       }),
     );
@@ -61,86 +64,95 @@ class HomePage extends StatelessWidget {
 
   PreferredSizeWidget _appBar(BuildContext context, ArticleCubit cubit, ArticleState state) {
     return AppBar(
-      // leading: const Icon(
-      //   Icons.notifications_outlined,
-      // ),
       title: const Text("Suyatra"),
       actions: [
-        FirebaseAuth.instance.currentUser != null ? IconButton(
-          onPressed: () {
-            context.read<AuthCubit>().signOutUser();  
-          },
-          icon: const Icon(Icons.logout),
-        ) : IconButton(
-          onPressed: () {
-            locator<NavigationService>().navigateToAndBack(signUpRoute, arguments: {});
-          },
-          icon: const Icon(Icons.login),
-        ),
+        kDebugMode ?
+          IconButton(
+            onPressed: () {
+              if(locator<FirebaseService>().firebaseAuth.currentUser == null) {
+                locator<NavigationService>().navigateToAndBack(signUpRoute, arguments: {"route": settingsRoute});
+                return;
+              } else {
+                locator<NavigationService>().navigateToAndBack(settingsRoute);
+              }
+            },
+            icon: const Icon(Icons.settings),
+          ) 
+          : (locator<FirebaseService>().firebaseAuth.currentUser != null ? IconButton(
+              onPressed: () {
+                context.read<AuthCubit>().signOutUser();  
+              },
+              icon: const Icon(Icons.logout),
+            ) : IconButton(
+              onPressed: () {
+                locator<NavigationService>().navigateToAndBack(signUpRoute, arguments: {});
+              },
+              icon: const Icon(Icons.login),
+            )),
       ],
-      // bottom: PreferredSize(
-      //   preferredSize: const Size.fromHeight(48),
-      //   child: Builder(
-      //     builder: (context) {
-      //       return Container(
-      //         margin: const EdgeInsets.only(bottom: 8.0),
-      //         height: 32.0,
-      //         width: MediaQuery.sizeOf(context).width,
-      //         child: ListView(
-      //           scrollDirection: Axis.horizontal,
-      //           children: [
-      //             InkWell(
-      //               onTap: () {
-      //                 cubit.selectCategory(null);
-      //               },
-      //               child: Container(
-      //                 margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-      //                 decoration: BoxDecoration(
-      //                   border: state.selectedCategory == null ? const Border(
-      //                     bottom: BorderSide(
-      //                       width: 4,
-      //                       color: blackColor,
-      //                     )
-      //                   ) : null,
-      //                 ),
-      //                 child: const Text(
-      //                   "Explore",
-      //                   style: TextStyle(
-      //                     fontWeight: FontWeight.w500,
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //             ...state.articleCategories!.map((category) {
-      //               return InkWell(
-      //                 onTap: () {
-      //                   cubit.selectCategory(category.id);
-      //                 },
-      //                 child: Container(
-      //                   margin: const EdgeInsets.only(right: 16.0),
-      //                   decoration: BoxDecoration(
-      //                     border: state.selectedCategory == category.id ? const Border(
-      //                       bottom: BorderSide(
-      //                         width: 4,
-      //                         color: blackColor,
-      //                       )
-      //                     ) : null,
-      //                   ),
-      //                   child: Text(
-      //                     category.title.capitalize(),
-      //                     style: const TextStyle(
-      //                       fontWeight: FontWeight.w500,
-      //                     ),
-      //                   ),
-      //                 ),
-      //               );
-      //             })
-      //           ],
-      //         ),
-      //       );
-      //     }
-      //   ),
-      // ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(48),
+        child: Builder(
+          builder: (context) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(bottom: 8.0),
+              height: 32.0,
+              width: MediaQuery.sizeOf(context).width,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      context.read<ArticleCubit>().navigateToArticlesList(articleType: ArticleType.all, category: null, mainCategory: null);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16.0),
+                      decoration: BoxDecoration(
+                        border: state.selectedMainCategory == null ? const Border(
+                          bottom: BorderSide(
+                            width: 4,
+                            color: blackColor,
+                          )
+                        ) : null,
+                      ),
+                      child: const Text(
+                        "All",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  ...state.mainCategories?.map((mainCategory) {
+                    return InkWell(
+                      onTap: () {
+                        context.read<ArticleCubit>().navigateToArticlesList(articleType: ArticleType.all, category: null, mainCategory: mainCategory.value);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 16.0),
+                        decoration: BoxDecoration(
+                          border: state.selectedMainCategory == mainCategory.value ? const Border(
+                            bottom: BorderSide(
+                              width: 4,
+                              color: blackColor,
+                            )
+                          ) : null,
+                        ),
+                        child: Text(
+                          mainCategory.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }) ?? []
+                ],
+              ),
+            );
+          }
+        ),
+      ),
     );
   }
 
@@ -175,9 +187,9 @@ class HomePage extends StatelessWidget {
       ), 
       // itemCount: state.articleCategories?.length ?? 0,
       children: [
-        ...state.articleCategories!.map((category) {
+        ...state.articleCategories?.map((category) {
           return _categoryCard(category);
-        }),
+        }) ?? [],
         _categoryCard(
           const ArticleCategoryEntity(
             id: 0, 

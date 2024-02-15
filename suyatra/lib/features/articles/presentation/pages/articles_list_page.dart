@@ -31,7 +31,7 @@ class ArticlesListPage extends StatelessWidget {
     return AppBar(
       title: const Text("Articles"),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(104),
+        preferredSize: const Size.fromHeight(164),
         child: Builder(
           builder: (context) {
             return Column(
@@ -45,7 +45,68 @@ class ArticlesListPage extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          articleCubit.selectCategory(null, articleType: articleCubit.state.articleType);
+                          articleCubit.selectCategory(articleCubit.state.selectedCategory, articleType: articleCubit.state.articleType, mainCategory: null);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                          decoration: BoxDecoration(
+                            border: articleCubit.state.selectedMainCategory == null ? const Border(
+                              bottom: BorderSide(
+                                width: 4,
+                                color: blackColor,
+                              )
+                            ) : null,
+                          ),
+                          child: const Text(
+                            "All",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                      ...articleCubit.state.mainCategories!.map((mainCategory) {
+                        return InkWell(
+                          onTap: () {
+                            articleCubit.selectCategory(
+                              articleCubit.state.selectedCategory, 
+                              articleType: articleCubit.state.articleType,
+                              mainCategory: mainCategory.value,
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 16.0),
+                            decoration: BoxDecoration(
+                              border: articleCubit.state.selectedMainCategory == mainCategory.value ? const Border(
+                                bottom: BorderSide(
+                                  width: 4,
+                                  color: blackColor,
+                                )
+                              ) : null,
+                            ),
+                            child: Text(
+                              mainCategory.title.capitalize(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        );
+                      })
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8.0),
+                  height: 32.0,
+                  width: MediaQuery.sizeOf(context).width,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          articleCubit.selectCategory(null, articleType: articleCubit.state.articleType, mainCategory: articleCubit.state.selectedMainCategory);
                         },
                         child: Container(
                           margin: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -71,6 +132,7 @@ class ArticlesListPage extends StatelessWidget {
                             articleCubit.selectCategory(
                               category.id, 
                               articleType: articleCubit.state.articleType,
+                              mainCategory: articleCubit.state.selectedMainCategory,
                             );
                           },
                           child: Container(
@@ -280,6 +342,7 @@ class ArticlesListPage extends StatelessWidget {
       builder: (context) {
         return Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
                 "assets/icons/no_data.svg",
