@@ -102,6 +102,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                 "scroll_to_comment": true,
                               },
                             );
+                          case settingsRoute:
+                            locator<NavigationService>().navigateToAndRemoveAll(
+                              widget.navigateBackTo!, 
+                              arguments: {
+                              },
+                            );
                           default:
                         }
                         break;
@@ -161,6 +167,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 arguments: {
                                   "route": articleDetailsRoute,
                                   "article": widget.article!, 
+                                },
+                              );
+                              break;
+                            case settingsRoute:
+                              locator<NavigationService>().navigateToAndBack(
+                                loginRoute, 
+                                arguments: {
+                                  "route": settingsRoute,
                                 },
                               );
                               break;
