@@ -9,6 +9,7 @@ class CachedImageWidget extends StatelessWidget {
   final double? height;
   final double? width;
   final double? opacity;
+  final String? placeHolderUrl;
   const CachedImageWidget({
     super.key,
     required this.imageUrl,
@@ -18,6 +19,7 @@ class CachedImageWidget extends StatelessWidget {
     this.height,
     this.width,
     this.opacity,
+    this.placeHolderUrl,
   });
 
   @override
@@ -30,10 +32,15 @@ class CachedImageWidget extends StatelessWidget {
           imageUrl: imageUrl,
           height: height,
           width: width,
-          errorWidget: (context, url, error) => const Icon(Icons.error),
+          errorWidget: (context, url, error) {
+            return Image.asset(
+              placeHolderUrl ?? "assets/images/placeholder.jpg",
+              fit: BoxFit.cover,
+            );
+          },
           placeholder: (context, value) {
             return Image.asset(
-              "assets/images/placeholder.jpg",
+              placeHolderUrl ?? "assets/images/placeholder.jpg",
               fit: BoxFit.cover,
             );
           },
