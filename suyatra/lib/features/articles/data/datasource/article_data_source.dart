@@ -40,22 +40,22 @@ class ArticleDataSourceImpl implements ArticleDataSource {
         mainCategories = [
           const MainCategoryModel(
             id: 001, 
-            title: "News briefs",
+            title: "Nepal Now",
             value: "news_briefs",
           ),
           const MainCategoryModel(
             id: 002, 
-            title: "Guides",
+            title: "Travel Guides",
             value: "guides",
           ),
           const MainCategoryModel(
             id: 003, 
-            title: "Newsletter",
+            title: "Nepal Insider",
             value: "newsletter"
           ),
           const MainCategoryModel(
             id: 004, 
-            title: "Longreads",
+            title: "Nepal Uncovered",
             value: "longreads"
           ),
         ];
