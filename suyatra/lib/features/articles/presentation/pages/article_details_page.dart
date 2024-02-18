@@ -37,6 +37,7 @@ class ArticleDetailsPage extends StatefulWidget {
 }
 
 class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
+  String _customDesc = "";
 
   void getComments() async {
     context.read<ArticleCubit>().getArticleComments(articleId: "${widget.article.id}");
@@ -47,6 +48,11 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     if(mounted) {
       context.read<ArticleCubit>().initializeControllers();
     }
+    //to load images without baseurl
+    setState(() {
+      _customDesc = widget.article.longDesc!;
+      _customDesc = _customDesc.replaceAll("/media/", "https://suyatra.com/media/");
+    });
     getComments();
   }
 
@@ -126,6 +132,9 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                   ),
                 ),
                 const SizedBox(height: 24.0),
+                Text(
+                  _customDesc
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
@@ -161,7 +170,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                       ),
                       const SizedBox(height: 32.0),
                       Html(
-                        data: widget.article.longDesc!,
+                        data: _customDesc,
                         onLinkTap: (String? url, attributes, element) async {
                           if (url != null) {
                             locator<NavigationService>().navigateToAndBack(
