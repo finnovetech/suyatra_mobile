@@ -259,57 +259,52 @@ class ArticlesListPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: GridView(
+                child: ListView.separated(
+                  separatorBuilder: (context, _) => const SizedBox(height: 16.0,),
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                    childAspectRatio: 0.85
-                  ),
-                  children: [
-                    ...articles.map((article) {
-                      return InkWell(
-                        onTap: () {
-                          articleCubit.openArticleDetails(article, "${articleCubit.state.articleType.value} ${article.id}");
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Hero(
-                              tag: "${articleCubit.state.articleType.value} ${article.id}",
-                              child: Material(
-                                color: whiteColor,
-                                shadowColor: grey300,
-                                clipBehavior: Clip.antiAlias,
-                                elevation: 1,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: CachedImageWidget(
-                                  imageUrl: "$websiteUrl${article.image}",
-                                  fit: BoxFit.fill,
-                                  height: 144,
-                                  width: MediaQuery.sizeOf(context).width,
-                                ),
+                  itemCount: articles.length,
+                  itemBuilder: (context, index) {
+                    ArticleEntity article = articles[index];
+                    return InkWell(
+                      onTap: () {
+                        articleCubit.openArticleDetails(article, "${articleCubit.state.articleType.value} ${article.id}");
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Hero(
+                            tag: "${articleCubit.state.articleType.value} ${article.id}",
+                            child: Material(
+                              color: whiteColor,
+                              shadowColor: grey300,
+                              clipBehavior: Clip.antiAlias,
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: CachedImageWidget(
+                                imageUrl: "$websiteUrl${article.image}",
+                                fit: BoxFit.fill,
+                                height: 144,
+                                width: MediaQuery.sizeOf(context).width,
                               ),
                             ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              article.title!,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: h9,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    })
-                  ],
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            article.title!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: h9,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
               articleLoading(articleCubit),

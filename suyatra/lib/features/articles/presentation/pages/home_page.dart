@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,7 +20,6 @@ import 'package:suyatra/widgets/card_widget.dart';
 import '../../../../utils/date_formats.dart';
 import '../../../../widgets/cached_image_widget.dart';
 import '../../../../widgets/page_loader.dart';
-import '../../../authentication/presentation/cubit/auth_cubit.dart';
 import '../cubit/article_state.dart';
 
 class HomePage extends StatelessWidget {
@@ -66,29 +64,17 @@ class HomePage extends StatelessWidget {
     return AppBar(
       title: const Text("Suyatra"),
       actions: [
-        kDebugMode ?
-          IconButton(
-            onPressed: () {
-              if(locator<FirebaseService>().firebaseAuth.currentUser == null) {
-                locator<NavigationService>().navigateToAndBack(signUpRoute, arguments: {"route": settingsRoute});
-                return;
-              } else {
-                locator<NavigationService>().navigateToAndBack(settingsRoute);
-              }
-            },
-            icon: const Icon(Icons.settings),
-          ) 
-          : (locator<FirebaseService>().firebaseAuth.currentUser != null ? IconButton(
-              onPressed: () {
-                context.read<AuthCubit>().signOutUser();  
-              },
-              icon: const Icon(Icons.logout),
-            ) : IconButton(
-              onPressed: () {
-                locator<NavigationService>().navigateToAndBack(signUpRoute, arguments: {});
-              },
-              icon: const Icon(Icons.login),
-            )),
+        IconButton(
+          onPressed: () {
+            if(locator<FirebaseService>().firebaseAuth.currentUser == null) {
+              locator<NavigationService>().navigateToAndBack(signUpRoute, arguments: {"route": settingsRoute});
+              return;
+            } else {
+              locator<NavigationService>().navigateToAndBack(settingsRoute);
+            }
+          },
+          icon: const Icon(Icons.settings),
+        ),
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(48),
