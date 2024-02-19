@@ -132,9 +132,6 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                   ),
                 ),
                 const SizedBox(height: 24.0),
-                Text(
-                  _customDesc
-                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
