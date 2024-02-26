@@ -273,7 +273,6 @@ class ArticleDataSourceImpl implements ArticleDataSource {
     int? category,
     }) async {
     try {
-      print(allArticles.length);
       final moreResponse = await _apiBaseHelper.getWithoutToken("$baseUrl/stories?per_page=3&main_category=${mainCategory ?? ""}&category=${category ?? ""}&page=$_currentArticlePage");
       if(moreResponse.statusCode == 200) {
         allArticles.addAll(List.from(jsonDecode(moreResponse.body)["result"]).map((e) => ArticleModel.fromMap(e)).toList());

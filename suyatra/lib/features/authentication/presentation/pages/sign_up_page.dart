@@ -230,14 +230,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   textColor: blackColor,
                   icon: SvgPicture.asset("assets/icons/google.svg"),
                 ),
-                const SizedBox(height: 12.0),
-                CustomButton(
-                  label: "Continue with apple",
-                  buttonColor: Colors.transparent,
-                  borderColor: blackColor,
-                  textColor: blackColor,
-                  icon: SvgPicture.asset("assets/icons/apple.svg"),
-                ),
+                ///TODO: implement apple sign up
+                // const SizedBox(height: 12.0),
+                // CustomButton(
+                //   label: "Continue with apple",
+                //   buttonColor: Colors.transparent,
+                //   borderColor: blackColor,
+                //   textColor: blackColor,
+                //   icon: SvgPicture.asset("assets/icons/apple.svg"),
+                // ),
               ],
             ),
           ),
