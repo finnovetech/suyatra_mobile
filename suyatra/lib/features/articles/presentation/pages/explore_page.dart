@@ -5,12 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:suyatra/constants/app_colors.dart';
 import 'package:suyatra/constants/enums.dart';
 import 'package:suyatra/constants/font_sizes.dart';
-import 'package:suyatra/constants/url_constants.dart';
 import 'package:suyatra/core/app_status.dart';
 import 'package:suyatra/core/service_locator.dart';
 import 'package:suyatra/features/articles/domain/entities/article_category_entity.dart';
 import 'package:suyatra/features/articles/domain/entities/article_entity.dart';
-import 'package:suyatra/features/articles/presentation/cubit/article_cubit.dart';
+import 'package:suyatra/features/articles/presentation/cubit/articles/article_cubit.dart';
 import 'package:suyatra/services/app_routes.dart';
 import 'package:suyatra/services/firebase_service.dart';
 import 'package:suyatra/services/navigation_service.dart';
@@ -20,10 +19,10 @@ import 'package:suyatra/widgets/card_widget.dart';
 import '../../../../utils/date_formats.dart';
 import '../../../../widgets/cached_image_widget.dart';
 import '../../../../widgets/page_loader.dart';
-import '../cubit/article_state.dart';
+import '../cubit/articles/article_state.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class ExplorePage extends StatelessWidget {
+  const ExplorePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +246,7 @@ class HomePage extends StatelessWidget {
             style: TextStyle(
               fontSize: h11,
               fontWeight:  FontWeight.w500,
-              color: primaryDark,
+              color: himalayanBlue,
             ),
           ),
         )
@@ -277,7 +276,7 @@ class HomePage extends StatelessWidget {
                     tag: "featured ${featuredArticle.id}",
                     child: CachedImageWidget(
                       opacity: 0.7,
-                      imageUrl: "$websiteUrl${featuredArticle.image}",
+                      imageUrl: "${featuredArticle.image}",
                       fit: BoxFit.cover,
                       width: MediaQuery.sizeOf(context).width,
                       height: MediaQuery.sizeOf(context).height,
@@ -350,7 +349,7 @@ class HomePage extends StatelessWidget {
             style: TextStyle(
               fontSize: h11,
               fontWeight:  FontWeight.w500,
-              color: primaryDark,
+              color: himalayanBlue,
             ),
           ),
         )
@@ -379,7 +378,7 @@ class HomePage extends StatelessWidget {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: CachedImageWidget(
-                      imageUrl: "$websiteUrl${popularArticle.image}",
+                      imageUrl: "${popularArticle.image}",
                       fit: BoxFit.cover,
                       width: MediaQuery.sizeOf(context).width,
                       height: 144,

@@ -6,9 +6,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:suyatra/constants/app_colors.dart';
 import 'package:suyatra/constants/enums.dart';
 import 'package:suyatra/constants/font_sizes.dart';
-import 'package:suyatra/constants/url_constants.dart';
 import 'package:suyatra/features/articles/domain/entities/article_entity.dart';
-import 'package:suyatra/features/articles/presentation/cubit/article_cubit.dart';
+import 'package:suyatra/features/articles/presentation/cubit/articles/article_cubit.dart';
 import 'package:suyatra/utils/string_extensions.dart';
 import 'package:suyatra/widgets/cached_image_widget.dart';
 import 'package:suyatra/widgets/custom_button.dart';
@@ -284,7 +283,7 @@ class ArticlesListPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
                               child: CachedImageWidget(
-                                imageUrl: "$websiteUrl${article.image}",
+                                imageUrl: "${article.image}",
                                 fit: BoxFit.fill,
                                 height: 144,
                                 width: MediaQuery.sizeOf(context).width,
@@ -385,15 +384,10 @@ class ArticlesListPage extends StatelessWidget {
   }
 
   Widget _articleGridShimmer() {
-    return GridView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, _) => const SizedBox(height: 16.0),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 0.85
-      ),
-      itemCount: 8,
+      itemCount: 3,
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
           baseColor: grey300,
