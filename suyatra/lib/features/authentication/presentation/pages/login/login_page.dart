@@ -79,19 +79,16 @@ class _LoginPageState extends State<LoginPage> {
               hintText: "Password",
             ),
             const SizedBox(height: 24.0),
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                onPressed: () {
-                  locator<NavigationService>().navigateToAndBack(forgotPasswordRoute);
-                },
-                child: const Text(
-                  "Forgot Password",
-                  style: TextStyle(
-                    color: grey70,
-                    fontSize: h9,
-                    fontWeight: FontWeight.w600,
-                  ),
+            TextButton(
+              onPressed: () {
+                locator<NavigationService>().navigateToAndBack(forgotPasswordRoute);
+              },
+              child: const Text(
+                "Forgot Password",
+                style: TextStyle(
+                  color: grey70,
+                  fontSize: h9,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -102,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                   case AppStatus.success:
                     switch (widget.navigateBackTo) {
                       case null:
-                        locator<NavigationService>().navigateTo(exploreRoute);
+                        locator<NavigationService>().navigateToAndRemoveAll(layoutRoute);
                         break;
                       case articleDetailsRoute:
                         locator<NavigationService>().navigateToAndRemoveAll(
@@ -144,24 +141,27 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             const SizedBox(height: 36.0),
-            RichText(
-              text: TextSpan(
-                text: "Don't have an account? ",
-                style: const TextStyle(
-                  fontSize: h9,
-                  color: grey70,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: "Register Now",
-                    recognizer: TapGestureRecognizer()..onTap = () {
-                      locator<NavigationService>().navigateToAndBack(welcomeRoute);
-                    },
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
+            Align(
+              alignment: Alignment.center,
+              child: RichText(
+                text: TextSpan(
+                  text: "Don't have an account? ",
+                  style: const TextStyle(
+                    fontSize: h9,
+                    color: grey70,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "Register Now",
+                      recognizer: TapGestureRecognizer()..onTap = () {
+                        locator<NavigationService>().navigateToAndBack(welcomeRoute);
+                      },
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      )
                     )
-                  )
-                ]
+                  ]
+                ),
               ),
             )
           ],
