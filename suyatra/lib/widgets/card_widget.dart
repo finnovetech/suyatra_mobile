@@ -10,7 +10,9 @@ class CardWidget extends StatelessWidget {
   final bool hasMargin;
   final EdgeInsets? labelMargin;
   final List<Widget>? actions;
-  const CardWidget({super.key, this.label, this.card, this.margin, this.hasMargin = true, this.labelMargin, this.actions,});
+  final Widget? child;
+  final Clip? clipBehavior;
+  const CardWidget({super.key, this.label, this.card, this.margin, this.hasMargin = true, this.labelMargin, this.actions, this.child, this.clipBehavior,});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +27,9 @@ class CardWidget extends StatelessWidget {
               label != null ? Text(
                 label!,
                 style: const TextStyle(
-                  fontSize: h9,
+                  fontSize: h8,
                   fontWeight: FontWeight.w500,
-                  color: grey700,
+                  color: grey70,
                 ),
               ) : const SizedBox(),
               actions != null ? Row(
@@ -41,7 +43,13 @@ class CardWidget extends StatelessWidget {
         ) : const SizedBox(),
         Padding(
           padding: hasMargin ? (margin ?? const EdgeInsets.symmetric(horizontal: 16.0)) : EdgeInsets.zero,
-          child: card ?? const SizedBox(),
+          child: card ?? Container(
+            clipBehavior: clipBehavior ?? Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: child,
+          ),
         )
       ],
     );
