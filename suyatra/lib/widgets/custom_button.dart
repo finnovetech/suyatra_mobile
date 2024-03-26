@@ -25,6 +25,9 @@ class CustomButton extends StatelessWidget {
   final Color? borderColor;
   final bool isLoading;
   final double? borderRadius;
+  final bool isSecondary;
+  final bool isTextButton;
+  final FontWeight? fontWeight;
   const CustomButton({
     super.key,
     this.isExpanded = false,
@@ -46,6 +49,9 @@ class CustomButton extends StatelessWidget {
     this.borderColor,
     this.isLoading = false,
     this.borderRadius,
+    this.isSecondary = false,
+    this.isTextButton = false,
+    this.fontWeight,
   });
 
   @override
@@ -63,12 +69,13 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: elevation,
-          backgroundColor: isDisabled ? grey400 : (buttonColor ?? blackColor),
-          foregroundColor: textColor ?? whiteColor,
+          shadowColor: elevation == 0 ? Colors.transparent : blackColor.withOpacity(0.17),
+          backgroundColor: isDisabled ? grey400 : (buttonColor ?? (isSecondary || isTextButton ? Colors.transparent : blackColor)),
+          foregroundColor: textColor ?? (isSecondary || isTextButton ? blackColor : whiteColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 100.0),
             side: BorderSide(
-              color: borderColor ?? buttonColor ?? blackColor,
+              color: isTextButton || isDisabled ? Colors.transparent : borderColor ?? buttonColor ?? blackColor,
             )
           ),
           padding: EdgeInsets.symmetric(
@@ -101,8 +108,8 @@ class CustomButton extends StatelessWidget {
                     style: labelStyle ??
                         TextStyle(
                           fontSize: fontSize ?? h9,
-                          fontWeight: FontWeight.w500,
-                          color: textColor ?? whiteColor,
+                          fontWeight: fontWeight ?? FontWeight.w500,
+                          color: textColor ?? (isSecondary || isTextButton ? blackColor : whiteColor),
                         ),
                   )
                 : const SizedBox(),
