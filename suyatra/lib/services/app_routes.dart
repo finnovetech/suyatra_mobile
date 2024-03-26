@@ -4,6 +4,7 @@ import 'package:suyatra/features/account/presentation/pages/guest/guest_account_
 import 'package:suyatra/features/account/presentation/pages/support_page.dart';
 import 'package:suyatra/features/activities/presentation/pages/activity_notifications/activity_notification_settings_page.dart';
 import 'package:suyatra/features/activities/presentation/pages/activity_notifications/activity_notifications_page.dart';
+import 'package:suyatra/features/activities/presentation/pages/create_activity/create_activity_page.dart';
 import 'package:suyatra/features/articles/presentation/pages/articles_list_page.dart';
 import 'package:suyatra/features/articles/presentation/widgets/web_view_external_links.dart';
 import 'package:suyatra/features/authentication/presentation/pages/login/create_password_page.dart';
@@ -56,6 +57,7 @@ const String layoutRoute = "layoutRoute";
 //activity route names
 const String activityNotificationsRoute = "activityNotificationsRoute";
 const String activityNotificationSettingsRoute = "activityNotificationSettingsRoute";
+const String createActivityRoute = "createActivityRoute";
 
 //account route names
 const String supportRoute = "supportRoute";
@@ -82,7 +84,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       ArticleEntity? article = (settings.arguments as Map)["article"];
       return customPageRoute(child: SignUpPage(navigateBackTo: navigateBackTo, article: article,), routeSettings: settings);
     case emailVerificationRoute:
-      bool isSignUp = (settings.arguments as bool);
+      bool isSignUp = (settings.arguments as bool?) ?? true;
       return customPageRoute(child: EmailVerificationPage(isSignUp: isSignUp), routeSettings: settings);
     case forgotPasswordRoute:
       return customPageRoute(child: const ForgotPasswordPage(), routeSettings: settings);
@@ -132,7 +134,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return customPageRoute(child: const ActivityNotificationsPage(), routeSettings: settings);
     case activityNotificationSettingsRoute:
       return customPageRoute(child: const ActivityNotificationSettingsPage(), routeSettings: settings);
-
+    case createActivityRoute:
+      return customPageRoute(child: const CreateActivityPage(), routeSettings: settings);
     //account routes
     case supportRoute:
       return customPageRoute(child: const SupportPage(), routeSettings: settings);
