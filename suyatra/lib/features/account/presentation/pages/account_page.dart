@@ -186,9 +186,10 @@ class _AccountPageState extends State<AccountPage> {
             CustomButton(
               borderRadius: 12.0,
               onPressed: () {
-                
+                authCubit.signOutUser();
               },
               isUppercase: false,
+              isLoading: authCubit.state.authStatus == AppStatus.loading,
               label: "Log out",
               buttonColor: whiteColor,
               textColor: sunsetRed,
