@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
             sendResetVerificationOTPUseCase: locator(),
             verifyResetOTPUseCase: locator(),
             createPasswordUseCase: locator(),
+            getUserDetailsUseCase: locator(),
           )
         ),
         BlocProvider(create: (context) => ActivityCubit()),
