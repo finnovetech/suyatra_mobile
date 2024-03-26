@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:suyatra/features/account/presentation/pages/guest/guest_account_delete_page.dart';
+import 'package:suyatra/features/account/presentation/pages/guest/guest_account_settings_page.dart';
 import 'package:suyatra/features/account/presentation/pages/support_page.dart';
 import 'package:suyatra/features/activities/presentation/pages/activity_notifications/activity_notification_settings_page.dart';
 import 'package:suyatra/features/activities/presentation/pages/activity_notifications/activity_notifications_page.dart';
@@ -55,8 +57,10 @@ const String layoutRoute = "layoutRoute";
 const String activityNotificationsRoute = "activityNotificationsRoute";
 const String activityNotificationSettingsRoute = "activityNotificationSettingsRoute";
 
-//support route names
+//account route names
 const String supportRoute = "supportRoute";
+const String guestAccountSettingsRoute = "guestAccountSettingsRoute";
+const String guestAccountDeleteRoute = "guestAccountDeleteRoute";
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -132,7 +136,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //account routes
     case supportRoute:
       return customPageRoute(child: const SupportPage(), routeSettings: settings);
-
+    case guestAccountSettingsRoute:
+      return customPageRoute(child: const GuestAccountSettingsPage(), routeSettings: settings);
+    case guestAccountDeleteRoute:
+      return customPageRoute(child: const GuestAccountDeletePage(), routeSettings: settings);
     default:
       return MaterialPageRoute(builder: (context) => Material(child: Center(child: Text("No such route ${settings.name}"),)));
   }

@@ -31,3 +31,4 @@ const himalayanBlue = Color(0xFF77B5FE);
 const himalayanNight = Color(0xFF1A1A1A);
 
 const sunsetRed = Color(0xFFFF6F61);
+const red50 = Color(0xFFFF3D3D);

@@ -75,7 +75,13 @@ class _AccountPageState extends State<AccountPage> {
         child: Column(
           children: [
             CustomListTile(
-              onTap: () {},
+              onTap: () {
+                if(user != null) {
+
+                } else {
+                  locator<NavigationService>().navigateToAndBack(guestAccountSettingsRoute);
+                }
+              },
               leading: Container(
                 height: 64.0,
                 width: 64.0,
