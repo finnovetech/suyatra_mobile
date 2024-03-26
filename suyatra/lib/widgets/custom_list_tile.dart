@@ -14,6 +14,8 @@ class CustomListTile extends StatelessWidget {
   final bool isDense;
   final bool hasRadius;
   final String? trailingText;
+  final TextStyle? trailingTextStyle;
+  final Color? trailingIconColor;
 
   const CustomListTile({
     super.key,
@@ -28,6 +30,8 @@ class CustomListTile extends StatelessWidget {
     this.isDense = false,
     this.hasRadius = true,
     this.trailingText,
+    this.trailingTextStyle,
+    this.trailingIconColor,
   });
 
   @override
@@ -59,12 +63,15 @@ class CustomListTile extends StatelessWidget {
             children: [
               trailingText != null ? Text(
                 trailingText!,
-                style: const TextStyle(
+                style: trailingTextStyle ?? const TextStyle(
                   fontSize: h9,
                   color: lightGrey,
                 ),
               ) : const SizedBox(),
-              const Icon(Icons.chevron_right),
+              Icon(
+                Icons.chevron_right,
+                color: trailingIconColor,
+              ),
             ],
           ),
         ),
