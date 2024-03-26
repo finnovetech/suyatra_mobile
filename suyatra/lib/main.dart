@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:suyatra/features/articles/presentation/cubit/article_cubit.dart';
+import 'package:suyatra/features/activities/presentation/cubit/activity_cubit.dart';
+import 'package:suyatra/features/articles/presentation/cubit/articles/article_cubit.dart';
 import 'package:suyatra/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:suyatra/firebase_options.dart';
 
@@ -44,9 +45,14 @@ class MyApp extends StatelessWidget {
             signOutUserUseCase: locator(),
             signInWithGoogleUseCase: locator(),
             updateUserProfileUseCase: locator(),
+            sendVertificationOTPUseCase: locator(),
             verifyUserEmailUseCase: locator(),
+            sendResetVerificationOTPUseCase: locator(),
+            verifyResetOTPUseCase: locator(),
+            createPasswordUseCase: locator(),
           )
-        )
+        ),
+        BlocProvider(create: (context) => ActivityCubit()),
       ],
       child: MaterialApp(
         title: 'Suyatra',
