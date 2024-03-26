@@ -14,6 +14,7 @@ class TextFieldWidget extends StatefulWidget {
   final String? textValue;
   final bool readOnly;
   final void Function(String?)? onChanged;
+  final bool isFilled;
   const TextFieldWidget({
     Key? key, 
     this.labelText, 
@@ -26,6 +27,7 @@ class TextFieldWidget extends StatefulWidget {
     this.textValue,
     this.readOnly = false,
     this.onChanged,
+    this.isFilled = false,
   }) : super(key: key);
 
   @override
@@ -69,7 +71,7 @@ class TextFieldDesignPageState extends State<TextFieldWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: _borderColor),
-        color: grey300,
+        color: widget.isFilled ? grey300 : null,
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(16.0),
