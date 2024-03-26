@@ -23,7 +23,7 @@ class AppThemes {
       ),
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: primaryDark,
+      color: himalayanBlue,
     )
   );
 }
