@@ -19,10 +19,9 @@ class ApiBaseHelper {
       // if(isTokenExpired(token) || aboutToExpire(token)) {
       //   token = await refreshToken();
       // }
-
       Map<String, String> headers = {
         "Content-Type": "application/json",
-        "Authorization": "Token $token",
+        "Authorization": "Bearer $token",
       };
 
       final response = await http.get(Uri.parse(url), headers: headers);

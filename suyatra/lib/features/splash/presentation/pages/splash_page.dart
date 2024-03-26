@@ -1,11 +1,14 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suyatra/constants/app_colors.dart';
 import 'package:suyatra/core/service_locator.dart';
 // import 'package:suyatra/features/articles/presentation/pages/home_page.dart';
 import 'package:suyatra/services/app_routes.dart';
 import 'package:suyatra/services/navigation_service.dart';
 import '../../../../constants/font_sizes.dart';
+import '../../../../services/shared_preference_service.dart';
+import '../../../authentication/presentation/cubit/auth_cubit.dart';
 // import '../../../../widgets/custom_button.dart';
 
 class SplashPage extends StatefulWidget {
@@ -20,8 +23,15 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      locator<NavigationService>().navigateTo(welcomeRoute);
+    BlocProvider.of<AuthCubit>(context);
+    Future.delayed(const Duration(seconds: 2), () async {
+      String? token = await locator<SharedPreferencesService>().getToken();
+      
+      if(token != null) {
+        locator<NavigationService>().navigateTo(layoutRoute);
+      } else {
+        locator<NavigationService>().navigateTo(welcomeRoute);
+      }
     });
   }
   @override
