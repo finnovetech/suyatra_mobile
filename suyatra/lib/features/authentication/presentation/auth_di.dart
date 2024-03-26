@@ -3,6 +3,7 @@ import 'package:suyatra/features/authentication/data/datasource/auth_data_source
 import 'package:suyatra/features/authentication/data/repositories/auth_repository_impl.dart';
 import 'package:suyatra/features/authentication/domain/repositories/auth_repository.dart';
 import 'package:suyatra/features/authentication/domain/usecases/create_password_use_case.dart';
+import 'package:suyatra/features/authentication/domain/usecases/get_user_details_use_case.dart';
 import 'package:suyatra/features/authentication/domain/usecases/send_reset_verification_otp_use_case.dart';
 import 'package:suyatra/features/authentication/domain/usecases/sign_in_user_use_case.dart';
 import 'package:suyatra/features/authentication/domain/usecases/sign_in_with_google_use_case.dart';
@@ -25,6 +26,7 @@ authDI() {
   locator.registerLazySingleton(() => SendResetVerificationOTPUseCase(locator()));
   locator.registerLazySingleton(() => VerifyResetOTPUseCase(locator()));
   locator.registerLazySingleton(() => CreatePasswordUseCase(locator()));
+  locator.registerLazySingleton(() => GetUserDetailsUseCase(locator()));
   
   //repositories
   locator.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(locator()));
