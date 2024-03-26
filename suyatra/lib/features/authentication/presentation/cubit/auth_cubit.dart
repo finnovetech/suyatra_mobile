@@ -12,8 +12,10 @@ import 'package:suyatra/features/authentication/domain/usecases/verify_user_emai
 import 'package:suyatra/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:suyatra/services/app_routes.dart';
 import 'package:suyatra/services/navigation_service.dart';
+import 'package:suyatra/services/shared_preference_service.dart';
 
 import '../../../../utils/toast_message.dart';
+import '../../domain/usecases/get_user_details_use_case.dart';
 import '../../domain/usecases/send_reset_verification_otp_use_case.dart';
 import '../../domain/usecases/send_verification_otp_use_case.dart';
 import '../../domain/usecases/sign_in_with_google_use_case.dart';
@@ -30,6 +32,7 @@ class AuthCubit extends Cubit<AuthState> {
   final SendResetVerificationOTPUseCase sendResetVerificationOTPUseCase;
   final VerifyResetOTPUseCase verifyResetOTPUseCase;
   final CreatePasswordUseCase createPasswordUseCase;
+  final GetUserDetailsUseCase getUserDetailsUseCase;
 
   AuthCubit({
     required this.signUpUserUseCase, 
@@ -42,8 +45,11 @@ class AuthCubit extends Cubit<AuthState> {
     required this.sendResetVerificationOTPUseCase,
     required this.verifyResetOTPUseCase,
     required this.createPasswordUseCase,
+    required this.getUserDetailsUseCase,
   }) 
-    : super(const AuthState());
+    : super(const AuthState()) {
+      getUserDetails();
+    }
 
   signUpUser({
     required String email,
@@ -61,8 +67,8 @@ class AuthCubit extends Cubit<AuthState> {
           emit(state.copyWith(authStatus: AppStatus.failure));
           toastMessage(message: error.message);
         }, 
-        (data) {
-          emit(state.copyWith(user: data, userEmail: email, userFullName: fullName, userPassword: password, authStatus: AppStatus.success));
+        (_) {
+          emit(state.copyWith(userEmail: email, userFullName: fullName, userPassword: password, authStatus: AppStatus.success));
           sendVerificationOTP();  
         }
 
@@ -298,6 +304,31 @@ class AuthCubit extends Cubit<AuthState> {
     } catch(e) {
       if(kDebugMode) {
         print(e.toString());
+      }
+      emit(state.copyWith(authStatus: AppStatus.failure));
+    }
+  }
+
+  getUserDetails() async {
+    emit(state.copyWith(authStatus: AppStatus.loading));
+    try {
+      String? token = await locator<SharedPreferencesService>().getToken();
+      if(token != null) {
+        final result = await getUserDetailsUseCase.call();
+        result.fold(
+          (error) {
+            emit(state.copyWith(authStatus: AppStatus.failure));
+            toastMessage(message: error.message);
+          }, 
+          (data) {
+            emit(state.copyWith(user: data, authStatus: AppStatus.success));
+          }
+        );
+      }
+    } catch(e, s) {
+      if(kDebugMode) {
+        print(e.toString());
+        print(s.toString());
       }
       emit(state.copyWith(authStatus: AppStatus.failure));
     }

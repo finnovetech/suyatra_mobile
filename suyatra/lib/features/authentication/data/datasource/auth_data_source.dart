@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:suyatra/constants/url_constants.dart';
@@ -7,13 +5,15 @@ import 'package:suyatra/core/service_locator.dart';
 import 'package:suyatra/features/authentication/data/models/user_model.dart';
 import 'package:suyatra/services/api_service/api_base_helper.dart';
 import 'package:suyatra/services/firebase_service.dart';
+import 'package:suyatra/services/google_auth_service.dart';
+import 'package:suyatra/services/shared_preference_service.dart';
 import 'package:suyatra/utils/toast_message.dart';
 
 import '../../../../core/exceptions.dart';
 import '../../../../core/firebase_error_messages.dart';
 
 abstract class AuthDataSource {
-  Future<UserModel?> signUpUser({required String email, required String password, required String fullName});
+  Future<void> signUpUser({required String email, required String password, required String fullName});
   Future<UserModel?> signInUser({required String email, required String password});
   Future<void> signOutUser();
   Future<UserModel?> signInWithGoogle();
@@ -23,6 +23,7 @@ abstract class AuthDataSource {
   Future<void> sendResetVerificationOTP({required String email});
   Future<void> verifyResetOTP({required String email, required String otp, required String password});
   Future<void> createPassword({required String password, required String confirmPassword});
+  Future<UserModel?> getUserDetails();
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
@@ -31,7 +32,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   AuthDataSourceImpl(this._apiBaseHelper);
 
   @override
-  Future<UserModel?> signUpUser({
+  Future<void> signUpUser({
     required String email,
     required String password,
     required String fullName,
@@ -46,14 +47,11 @@ class AuthDataSourceImpl implements AuthDataSource {
           "last_name": fullName.split(" ").last
         }
       );
-      if(response.statusCode == 200) {
-        var decodedResponse = jsonDecode(response.body);
-        return UserModel.fromJson(decodedResponse);
-      } else {
+      if(response.statusCode != 200) {
         throw APIException(message: response.body, statusCode: -1);
       }
     } on APIException catch (e) {
-      throw APIException(message: jsonDecode(e.message)["details"][0], statusCode: -1);
+      throw APIException(message: e.message, statusCode: -1);
     }
   }
 
@@ -71,8 +69,9 @@ class AuthDataSourceImpl implements AuthDataSource {
         }
       );
       if(response.statusCode == 200) {
-        var decodedResponse = jsonDecode(response.body);
-        return UserModel.fromJson(decodedResponse);
+        UserModel user = UserModel.fromJson(response.body);
+        locator<SharedPreferencesService>().saveToken(user.access!);
+        return UserModel.fromJson(response.body);
       } else {
         throw APIException(message: response.body, statusCode: -1);
       }
@@ -83,10 +82,10 @@ class AuthDataSourceImpl implements AuthDataSource {
 
   @override
   Future<void> signOutUser() async {
-    final User? firebaseUser = locator<FirebaseService>().firebaseAuth.currentUser;
-    await GoogleSignIn().signOut();
-    if (firebaseUser != null) {
-      await locator<FirebaseService>().firebaseAuth.signOut();
+    try {
+      await locator<SharedPreferencesService>().signOut();
+    } catch (e) {
+      throw APIException(message: e.toString(), statusCode: -1);
     }
   }
 
@@ -95,7 +94,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       signOutUser();
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await locator<GoogleAuthService>().login();
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -106,13 +105,14 @@ class AuthDataSourceImpl implements AuthDataSource {
             "auth_token": googleAuth.accessToken,
           }
         );
-
         if(response.statusCode == 200) {
           return UserModel.fromJson(response.body);
+        } else {
+          throw APIException(message: response.body, statusCode: -1);
         }
       }
-    } on FirebaseAuthException catch (e) {
-      throw APIException(message: Errors.show(e.code), statusCode: -1);
+    } on APIException catch (e) {
+      throw APIException(message: e.toString(), statusCode: -1);
     }
     return null;
   }
@@ -140,13 +140,13 @@ class AuthDataSourceImpl implements AuthDataSource {
         await user?.verifyBeforeUpdateEmail(email);
         toastMessage(message: "The email will be updated after it has been verified!");
       }
-      
-      return UserModel(
-        id: user?.uid, 
-        email: user?.email ?? "", 
-        firstName: user?.displayName ?? "", 
-        lastName: user?.displayName ?? "",
-      );
+      return null;
+      // return UserModel(
+      //   id: user?.uid, 
+      //   email: user?.email ?? "", 
+      //   firstName: user?.displayName ?? "", 
+      //   lastName: user?.displayName ?? "",
+      // );
     } on FirebaseAuthException catch (e) {
       throw APIException(message: Errors.show(e.code), statusCode: -1);
     }
@@ -240,4 +240,19 @@ class AuthDataSourceImpl implements AuthDataSource {
       throw APIException(message: e.message, statusCode: -1);
     }
   }
+
+  @override
+  Future<UserModel?> getUserDetails() async {
+    try {
+      final response = await _apiBaseHelper.get("$baseUrl/user-profile/");
+      if(response.statusCode == 200) {
+        return UserModel.fromJson(response.body);
+      } else {
+        throw APIException(message: response.body, statusCode: -1);
+      }
+    } catch (e) {
+      throw APIException(message: e.toString(), statusCode: -1);
+    }
+  }
+
 }

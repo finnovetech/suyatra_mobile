@@ -13,7 +13,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._authDataSource);
 
   @override
-  ResultFuture<UserEntity> signUpUser({
+  ResultFuture<void> signUpUser({
     String? email,
     String? password,
     String? fullName,
@@ -24,7 +24,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password!,
         fullName: fullName!,
       );
-      return Right(result!);
+      return Right(result);
     } on APIException catch(e) {
       return Left(ApiFailure.fromException(e));
     }
@@ -136,6 +136,16 @@ class AuthRepositoryImpl implements AuthRepository {
         confirmPassword: confirmPassword,
       );
       return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<UserEntity> getUserDetails() async {
+    try {
+      final result = await _authDataSource.getUserDetails();
+      return Right(result!);
     } on APIException catch(e) {
       return Left(ApiFailure.fromException(e));
     }
