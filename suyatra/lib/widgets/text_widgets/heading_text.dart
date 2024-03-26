@@ -9,12 +9,14 @@ class HeadingText extends StatelessWidget {
   final TextStyle? style;
   final FontWeight? fontWeight;
   final bool isUpperCase;
-  const HeadingText(this.text, {super.key, this.textColor, this.style, this.fontWeight, this.isUpperCase = true});
+  final TextAlign? textAlign;
+  const HeadingText(this.text, {super.key, this.textColor, this.style, this.fontWeight, this.isUpperCase = true, this.textAlign,});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       isUpperCase ? text.toUpperCase() : text,
+      textAlign: textAlign,
       style: style ?? TextStyle(
         fontSize: h1,
         fontWeight: fontWeight ?? FontWeight.w700,

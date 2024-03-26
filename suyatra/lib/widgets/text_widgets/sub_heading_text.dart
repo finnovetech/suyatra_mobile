@@ -9,17 +9,28 @@ class SubHeadingText extends StatelessWidget {
   final TextStyle? style;
   final FontWeight? fontWeight;
   final bool isUpperCase;
-  const SubHeadingText(this.text, {super.key, this.textColor, this.style, this.fontWeight, this.isUpperCase = true});
+  final TextAlign? textAlign;
+  const SubHeadingText(
+    this.text, {
+    super.key,
+    this.textColor,
+    this.style,
+    this.fontWeight,
+    this.isUpperCase = true,
+    this.textAlign,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: style ?? TextStyle(
-        fontSize: h9,
-        fontWeight: fontWeight ?? FontWeight.w400,
-        color: textColor ?? grey400,
-      ),
+      textAlign: textAlign,
+      style: style ??
+        TextStyle(
+          fontSize: h9,
+          fontWeight: fontWeight ?? FontWeight.w400,
+          color: textColor ?? grey400,
+        ),
     );
   }
 }
