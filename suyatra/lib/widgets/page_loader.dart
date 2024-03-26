@@ -24,7 +24,7 @@ class PageLoader extends StatelessWidget {
                   ? Colors.black
                   : grey100),
                   strokeWidth: 2.5,
-            valueColor: AlwaysStoppedAnimation<Color>(valueColor ?? primaryDark),
+            valueColor: AlwaysStoppedAnimation<Color>(valueColor ?? himalayanBlue),
           ),
         ),
       ),
