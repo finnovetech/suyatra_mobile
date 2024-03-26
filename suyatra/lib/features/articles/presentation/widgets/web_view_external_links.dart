@@ -18,7 +18,7 @@ class _WebViewExternalUrlsState extends State<WebViewExternalUrls> {
   void initState() {
     super.initState();
     controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setJavaScriptMode(JavaScriptMode.disabled)
       ..loadRequest(Uri.parse(widget.url));
   }
 
