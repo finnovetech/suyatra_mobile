@@ -16,6 +16,9 @@ class Errors {
         case 'requires-recent-login':
           return "Please login again to continue";
 
+        case 'operation-not-allowed':
+          return "Google sign up is currently unavailable";
+
        default:
          return "An error has occurred";
      }
