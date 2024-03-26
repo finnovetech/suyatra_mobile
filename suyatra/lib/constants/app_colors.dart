@@ -11,6 +11,7 @@ const whiteColor = Color(0xFFFFFFFF);
 const lightGrey = Color(0xFF868686);
 const grey10 = Color(0xFFE8E8E8);
 const grey20 = Color(0xFFDDDDDD);
+const grey30 = Color(0xFFBBBBBB);
 const grey40 = Color(0xFFA6A6A6);
 const grey50 = Color(0xFFFAFAFA);
 const grey70 = Color(0xFF525252);
