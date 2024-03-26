@@ -16,11 +16,13 @@ class AuthRepositoryImpl implements AuthRepository {
   ResultFuture<UserEntity> signUpUser({
     String? email,
     String? password,
+    String? fullName,
   }) async {
     try {
       final result = await _authDataSource.signUpUser(
         email: email!, 
         password: password!,
+        fullName: fullName!,
       );
       return Right(result!);
     } on APIException catch(e) {
@@ -80,9 +82,59 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  ResultFuture<void> verifyUserEmail() async {
+  ResultFuture<void> sendVerificationOTP({required String email}) async {
     try {
-      final result = await _authDataSource.verifyUserEmail();
+      final result = await _authDataSource.sendVerificationOTP(email: email);
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> verifyUserEmail({required String email, required String otp}) async {
+    try {
+      final result = await _authDataSource.verifyUserEmail(
+        email: email,
+        otp: otp,
+      );
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> sendResetVerificationOTP({required String email}) async {
+    try {
+      final result = await _authDataSource.sendResetVerificationOTP(email: email);
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> verifyResetOTP({required String email, required String otp, required String password}) async {
+    try {
+      final result = await _authDataSource.verifyResetOTP(
+        email: email,
+        otp: otp,
+        password: password,
+      );
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> createPassword({required String password, required String confirmPassword}) async {
+    try {
+      final result = await _authDataSource.createPassword(
+        password: password,
+        confirmPassword: confirmPassword,
+      );
       return Right(result);
     } on APIException catch(e) {
       return Left(ApiFailure.fromException(e));

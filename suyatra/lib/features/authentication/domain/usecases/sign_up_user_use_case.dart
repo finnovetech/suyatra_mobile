@@ -14,6 +14,7 @@ class SignUpUserUseCase implements UseCaseWithParams<UserEntity, SignUpUserParam
     return await _repository.signUpUser(
        email: params.email,
        password: params.password,
+       fullName: params.fullName,
     );
   }
 }
@@ -21,8 +22,9 @@ class SignUpUserUseCase implements UseCaseWithParams<UserEntity, SignUpUserParam
 class SignUpUserParams {
   final String email;
   final String password;
+  final String fullName;
 
-  SignUpUserParams({required this.email, required this.password});
+  SignUpUserParams({required this.email, required this.password, required this.fullName});
 }
 
 
