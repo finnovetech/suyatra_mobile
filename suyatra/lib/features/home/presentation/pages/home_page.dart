@@ -96,7 +96,7 @@ class HomePage extends StatelessWidget {
               fullWidth: false,
               elevation: 5,
               onPressed: () {
-                
+                locator<NavigationService>().navigateToAndBack(createActivityRoute);
               },
               icon: const Icon(Icons.add),
               buttonColor: himalayanBlue,
