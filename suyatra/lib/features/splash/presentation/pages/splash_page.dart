@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      locator<NavigationService>().navigateTo(homeRoute);
+      locator<NavigationService>().navigateTo(welcomeRoute);
     });
   }
   @override
@@ -107,7 +107,7 @@ class _SplashPageState extends State<SplashPage> {
           //         style: TextStyle(
           //           fontSize: h9,
           //           fontWeight: FontWeight.w500,
-          //           color: primaryDark,
+          //           color: himalayanBlue,
           //         ),
           //       )
           //     )

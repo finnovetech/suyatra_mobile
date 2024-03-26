@@ -89,7 +89,7 @@ class SettingsPage extends StatelessWidget {
         ? null 
         : IconButton(
             onPressed: () {
-              locator<NavigationService>().navigateTo(homeRoute);
+              locator<NavigationService>().navigateTo(exploreRoute);
             }, 
             icon: Icon(Icons.adaptive.arrow_back),
           ),

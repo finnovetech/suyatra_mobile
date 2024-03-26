@@ -180,12 +180,14 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
             controller: emailController,
             suffixIcon: userEmailVerified ? null : InkWell(
               onTap: () {
-                authCubit.verifyUserEmail();
+                // authCubit.verifyUserEmail(
+                //   email: emailController.text
+                // );
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 decoration: BoxDecoration(
-                  color: primaryDark,
+                  color: himalayanBlue,
                   borderRadius: BorderRadius.circular(12.0)
                 ),
                 child: const Text(
