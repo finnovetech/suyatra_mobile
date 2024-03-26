@@ -18,4 +18,6 @@ abstract class ArticleRepository {
   ResultFuture<List<CommentEntity>?> getArticleComments({required String articleId});
 
   ResultFuture<void> addArticleComment({required String articleId, required Map<String, dynamic> comment});
+
+  ResultFuture<ArticleEntity> getArticleDetails({required String slug});
 }

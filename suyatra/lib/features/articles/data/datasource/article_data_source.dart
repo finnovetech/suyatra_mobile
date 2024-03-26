@@ -25,6 +25,7 @@ abstract class ArticleDataSource {
   Future<List<ArticleModel>> getMoreAllArticles({required List<ArticleModel> allArticles, String? mainCategory, int? category,});
   Future<List<CommentModel>> getArticleComments({required String articleId});
   Future<void> addArticleComment({required String articleId, required Map<String, dynamic> comment});
+  Future<ArticleModel> getArticleDetails({required String slug});
 }
 
 class ArticleDataSourceImpl implements ArticleDataSource {
@@ -341,6 +342,25 @@ class ArticleDataSourceImpl implements ArticleDataSource {
       }
     } on FirebaseException catch(e) {
       throw APIException(message: Errors.show(e.code), statusCode: -1);
+    } catch(e) {
+      throw APIException(message: e.toString(), statusCode: -1);
+    }
+  }
+
+  @override
+  Future<ArticleModel> getArticleDetails({
+    required String slug,
+    }) async {
+    try {
+      final response = await _apiBaseHelper.getWithoutToken("$baseUrl/stories/$slug");
+      if(response.statusCode == 200) {
+        ArticleModel articleModel = ArticleModel.fromJson(response.body);  
+        return articleModel;
+      } else {
+        throw APIException(message: response.body, statusCode: response.statusCode);
+      }
+    } on APIException {
+      rethrow;
     } catch(e) {
       throw APIException(message: e.toString(), statusCode: -1);
     }

@@ -6,6 +6,7 @@ import 'package:suyatra/features/articles/domain/usecases/add_article_comment_us
 import 'package:suyatra/features/articles/domain/usecases/get_all_articles_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_article_categories_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_article_comments_use_case.dart';
+import 'package:suyatra/features/articles/domain/usecases/get_article_details_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_featured_articles_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_main_categories_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_popular_articles_use_case.dart';
@@ -19,6 +20,7 @@ articleDI() {
   locator.registerLazySingleton(() => GetAllArticlesUseCase(locator()));
   locator.registerLazySingleton(() => GetArticleCommentsUseCase(locator()));
   locator.registerLazySingleton(() => AddArticleCommentUseCase(locator()));
+  locator.registerLazySingleton(() => GetArticleDetailsUseCase(locator()));
   
   //repositories
   locator.registerLazySingleton<ArticleRepository>(() => ArticleRepositoryImpl(locator()));

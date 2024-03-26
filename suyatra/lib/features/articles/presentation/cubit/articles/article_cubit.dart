@@ -13,12 +13,12 @@ import 'package:suyatra/features/articles/domain/usecases/get_article_comments_u
 import 'package:suyatra/features/articles/domain/usecases/get_featured_articles_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_main_categories_use_case.dart';
 import 'package:suyatra/features/articles/domain/usecases/get_popular_articles_use_case.dart';
-import 'package:suyatra/features/articles/presentation/cubit/article_state.dart';
+import 'package:suyatra/features/articles/presentation/cubit/articles/article_state.dart';
 import 'package:suyatra/services/firebase_service.dart';
 import 'package:suyatra/services/navigation_service.dart';
 import 'package:suyatra/utils/toast_message.dart';
 
-import '../../../../services/app_routes.dart';
+import '../../../../../services/app_routes.dart';
 
 class ArticleCubit extends Cubit<ArticleState> {
   final GetMainCategoriesUseCase getMainCategoriesUseCase;

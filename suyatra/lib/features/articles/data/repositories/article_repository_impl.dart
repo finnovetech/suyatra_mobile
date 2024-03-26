@@ -117,4 +117,18 @@ class ArticleRepositoryImpl implements ArticleRepository {
       return Left(ApiFailure.fromException(e));
     }
   }
+
+  @override
+  ResultFuture<ArticleEntity> getArticleDetails({
+    required String slug,
+  }) async {
+    try {
+      final result = await _articleDataSource.getArticleDetails(
+        slug: slug,
+      );
+      return Right(result);
+    } on APIException catch(e) {
+      return Left(ApiFailure.fromException(e));
+    }
+  }
 }
